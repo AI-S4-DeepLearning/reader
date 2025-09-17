@@ -1,0 +1,66 @@
+\documentclass[a4paper,openany]{tufte-book-hu}
+\usepackage{python}
+\usepackage{amsmath, physics}
+
+\tikzstyle{coverbox} = [fill=black, rectangle, rounded corners=7pt, inner sep=7pt, inner ysep=12pt, fill opacity=0.45, text opacity=1]
+\usetikzlibrary{arrows, shapes, positioning, arrows.meta}
+\tikzstyle{blArrow}=[line width=1mm,draw=black!80,-triangle 45,postaction={draw, line width=3mm, shorten >=4mm, -}]
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{3d}
+
+\tikzset{xyp/.style={canvas is xy plane at z=#1}}
+\tikzset{xzp/.style={canvas is xz plane at y=#1}}
+\tikzset{yzp/.style={canvas is yz plane at x=#1}}
+
+\title{Deep Learning}
+\author{Brian van der Bijl}
+
+\begin{document}
+\maketitle
+
+\chapter*{Disclaimer} 
+\noindent This document was created for \enquote{Deep Learning}, the fourth semester Artificial Intelligence of the HU University of Applied Sciences Utrecht. This document is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike-4.0 International Licence.\\
+
+Based on the reader for Machine Learning (in turn based on various other sources) and course material for Natural Language Processing.\\[3mm] % License information
+
+\noindent Compiled by Brian van der Bijl (hogeschooldocent).\\[5mm] %Verified by
+
+
+\noindent \textit{First release, pending} % Printing/edition date
+
+\frontmatter
+
+\tableofcontents
+
+\mainmatter
+
+\input{ai}
+
+\part{Linear Algebra}
+\input{la/linear_algebra}
+
+\part{Neural Networks}
+\input{nn/nn}
+\input{nn/vectorised}
+\input{nn/app-libs}
+
+\part{Image Processing}
+\input{img/cnn}
+
+\part{Natural Language Processing}
+
+\part{Reinforcement Learning}
+
+\part{Verdiepingsstof}
+\chapter{Over dit deel}
+Dit laatste deel van de reader bevat informatie over aanvullende onderwerpen die niet tijdens dit semester aan bod komen, maar voortbouwen op de behandelde stof. Deze onderwerpen kunnen gebruikt worden voor extra verdieping en excellentie door de ge\"interesseerde student.
+
+\input{extra/ea}
+
+\part{Uitwerkingen}
+\input{uitwerkingen}
+
+\bibliography{bibliography}
+\bibliographystyle{plainnat}
+
+\end{document}

@@ -1,0 +1,185 @@
+\chapter{Linear Algebra}\label{ch:la}
+
+\section{Dimensionaliteit}
+De term \emph{deep learning} is er een die, afhankelijk van de context, verschillende nuances aan kan nemen. De technische definitie berust op de inzet van neurale netwerken met meerdere lagen, cf. \enquote{shallow} of \enquote{ondiepe} netwerken met een enkele hidden layer. Maar zoals vaker met technische termen gebeurt als de wijdere wereld er mee aan de gang gaat\sidenote{Specifiek: de wereld van investeerders en marketers.} krijgt de term een gevoelsmatige waarde\sidenote{Zie: hype curve.} en wordt de term ineens gebruikt voor van alles dat er voldoende op lijkt en net zo hip en trendy is. Wat \enquote{deep learning} echter in vrijwel alle gevallen onderscheid van reguliere \enquote{machine learning} en \enquote{data-science} is de schaal: er wordt veel data gebruikt, die per datapunt veel informatie bevat\sidenote{Dat wil zeggen: hoog-dimensionaal.}, en door meerdere wiskundige transformaties gaat in een poging een voorspel-functie te benaderen. Dit idee is niet nieuw, maar werd in het verleden in toepassing beperkt door de beschikbaarheid van resources: \begin{inparaenum}\item data en \item rekenkracht\end{inparaenum}. De eerste beperking vereiste een paradigma-shift in hoe organsiaties met hun administratie omgaan, maar dit valt buiten de scope van dit deel van de cursus/reader. Wat betreft rekenkracht worden hier in rap tempo stappen gemaakt, maar is de meeste winst tegenwoordig te behalen met paralellisatie: hoe meer berekeningen onafhankelijk van elkaar tegelijkertijd uitgevoerd kunnen worden, hoe sneller data door alle complexe berekeningen gevoerd kan worden en hoe bruikbaarder de uiteindelijke AI-oplossing is.
+
+Binnen de wiskunde bestaat een gebied om paralelle data en de berekeningen daarop weer te geven, de zogenaamde \emph{lineaire algebra}. In dit deel van de cursus gaan we met deze taal kennismaken, alsoom met voor ons vakgebied relevante uitbreidingen en algemene algoritmes om met hoog-dimensionale data om te gaan.
+
+
+
+\def\vec#1{\ket{#1}}
+\def\vec#1{\mid\! #1\rangle}
+
+\section[Linear Algebra]{Linear Algebra}
+
+\subsection{Vectors and Vector Spaces}
+Vectors are a mathematical object for which three common intuitions exist. We look at each in turn, and then turn our attention to how these intuitions are helpful.
+
+\paragraph{Arrows (Physics)}
+Vectors are represented by arrows in a $2$-dimensional plane or a $3$-dimensional space. Vectors can be combined to form new vectors, or scaled to become larger or smaller. Vectors are usually used to describe forces acting on objects, and are said to have magnitude (their length) and direction.
+
+  \begin{minipage}{0.5\textwidth}\centering
+  \includegraphics[width=0.5\textwidth]{pictures/vectoraddition}
+  \end{minipage}\begin{minipage}{0.5\textwidth}\centering
+  \includegraphics[width=0.5\textwidth]{pictures/3d}\\
+  \end{minipage}
+
+\paragraph{Arrays of Numbers (Data Science)}
+Vectors in data science are not limited to two or three dimensions. A vector is considered to be an ordered list of numbers of a fixed length. A vector of two dimensions contains two numbers (usually real numbers). Such a vector is said to be in $\mathbb{R}^2$. Vectors of two and three dimensions can be represented like their counterparts in physics, higher-dimensional vectors lack such a visualisation. Fortunately, most intuitions in lower dimensions scale well to higher dimensions.
+
+  $$ \begin{bmatrix}0.1359 \\ 0.4671 \\ -0.3379 \\ -0.2229 \\ -0.1364 \\ 0.3009\end{bmatrix} + \begin{bmatrix}0.0381 \\ -0.4876 \\ 0.9101 \\ 0.0011 \\ 0.4284 \\ -0.0139 \end{bmatrix} = \begin{bmatrix} 0.174 \\ -0.0205 \\ 0.5722 \\ -0.2288 \\ 0.292 \\ 0.287 \end{bmatrix} $$
+
+\paragraph{Abstract (Mathematics)}
+Mathematically, a vector is defined more abstact, as an object within a vector space, for which a number of operations are defined. We can combine two vectors by adding them, putting the arrows end-to-end, or by adding every coefficient one at a time. Furthermore, we can also scale a vector by a \emph{scalar} (usually a real number), by scaling the arrow or multiplying each coefficient by this number. In every vector space, there exists exactly one zero-vector, called $\vec 0$, which is an arrow without length and consists of only $0$ coefficients. Furthermore, for every vector a unique inverse (negative) can be found, for example $(-v_1, -v_2, \dots, -v_n)$ for $(v_1, v_2, \dots, v_n)$\footnote{We will usually represent vectors as column vectors, i.e. vertically and between square brackets. Within sentences, a horizontal representation using parentheses is used instead.}. The formal definition is given in Definition \ref{def:vecspace}. This definition is a lot to swallow at first, and is mainly given for reference. The rules described here ensure that vectors behave as we expect them to. Furthermore, vectors can be written as a linear combination of basis-vectors, which means we can break them apart into a sum of products of coefficients and basis-vectors. For example, using the standard basis for $\mathbb{R}^3$:
+$$ \begin{bmatrix}a \\ b \\ c\end{bmatrix} = a\vec{e_1} + b\vec{e_2} + c\vec{e_3} = a \begin{bmatrix}1 \\ 0 \\ 0\end{bmatrix} + b \begin{bmatrix}0 \\ 1 \\ 0\end{bmatrix} + c \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}$$
+
+\begin{definition}[Definition of a Vector Space]\mbox{}\\
+  A vector field is a quadruple $(V,F,+,\cdot)$, where $V$ is a set of vectors in our space, $F$ is a field of scalars (coefficients of our vectors), $+ : V \times V \to V$ (vector addition) is an operation to add two vectors, and $\cdot : F \times V \to V$ (scalar multiplication) is an operation to scale a vector by a scalar. Furthermore, the following must hold:
+  \begin{itemize}
+    \item Vector addition is associative ($\vec u + (\vec v + \vec w) = (\vec u + \vec v) + \vec w$) and commutative ($\vec{u} + \vec{v} = \vec{v} + \vec{u}$).
+    \item There must exist an additive identity $\vec 0$, such that $\vec{v} + \vec{0} = \vec{v}$.
+    \item Each vector must have an additive inverse: for every vector $\vec v$ we can find another vector $\vec{-v}$ such that $\vec v + (\vec{-v}) = \vec 0$.
+    \item Scalar multiplication is compatible with field multiplication, so $a(b\vec v) = (ab)\vec v$.
+    \item The multiplicative identity of the scalar field $F$ (generally $1$ is also the identity element for scalar multiplication, so $1 \vec v = \vec v$
+    \item Scalar multiplication distributes over vector addition, so $a(\vec u + \vec v) = a\vec u + a\vec v$.
+    \item Scalar multiplication distributes over field addition, so $(a+b)\vec v = a\vec v + b\vec v$.
+  \end{itemize}\label{def:vecspace}
+\end{definition}
+
+Note that while all $3$-dimensional vectors ($\mathbb{R}^3$) form a vector space, and all $2$-dimensional vectors ($\mathbb{R}^2$) form a vector space as well, that these are not the same spaces. We cannot add or subtract vectors in different spaces, so the following is invalid and does not have an answer:
+$$\begin{bmatrix}1\\2\\3\end{bmatrix} + \begin{bmatrix}0\\1\end{bmatrix} =\ ?$$
+
+\paragraph{Vector Operations}
+The three intuitions presented above each serve their own purpose: the physics intuition allows for easy visualisation, whereas the data science intuition gives us access to the data contained within the vectors allows us to carry out vector operations. The mathemathical intuition is more abstract, and mainly serves to establish a set of rules for managing vectors.
+
+\def\u{\begin{bmatrix} -4 \\ 1 \\ 2 \end{bmatrix}}
+\def\v{\begin{bmatrix} 0 \\ 9 \\ -6 \end{bmatrix}}
+\def\w{\begin{bmatrix} 3 \\ -2 \\ -1 \end{bmatrix}}
+\def\x{\begin{bmatrix} 1 \\ 5 \end{bmatrix}}
+\def\y{\begin{bmatrix} 0 \\ -8 \end{bmatrix}}
+\def\inprod#1#2{\langle #1 \mid #2 \rangle}
+\def\outprod#1#2{\mid\! #1 \rangle \langle #2 \!\mid}
+
+\begin{exercise}[Vector Addition and Scalar Multiplication]\mbox{}\\[2mm]
+  Given the following vectors,
+  \begin{equation*}
+    \vec u = \u
+    \vec v = \v
+    \vec w = \w
+    \vec x = \x
+    \vec y = \y
+  \end{equation*}
+    evaluate the following sums and multiplications (or explain why no answer exists):
+    \begin{enumerate}[label=\alph*.]
+      \item $\vec u + \vec v$
+      \item $\vec u - \vec w$
+      \item $2\vec v$
+      \item $3\vec u - 2\vec v + \vec w$
+      \item $\vec x + \vec y - \vec y$
+      \item $2\vec x + \vec u$
+    \end{enumerate}
+\end{exercise}
+
+\paragraph{Inner Products}
+As seen above, we can add and subtract vectors (subtraction being defined as adding the inverse of a vector), and multiply any vector by a scalar. One further operation is necessary for the application of vectors in neural networks: The dot product or inner product. Any vector space equipped with an inner product is called an \emph{inner product space}\footnote{Not every vector space is an inner product space, although most vector spaces that we will concern ourselves with are. Soon, we encounter an example of a vector space without an inner product.}. The inner product is an operation $\langle\ ,\ \rangle : V \times V \to F$, so that
+$\langle u , v \rangle = u_1 v_1 +  u_2 v_2 + \dots +  u_n v_n$. The inner product of $\vec u$ and $\vec v$ is also written as $\vec u \cdot \vec v$ and $\bra{u}\ket{v}$ (Dirac notation), the latter of which we will use for the rest of this chapter.
+
+$$ \vec u = \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix}, \vec v = \begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix} $$
+$$ \bra{u}\ket{v} = 1 \times 1 + 2 \times 0 + 3 \times 1 = 4$$
+
+Just as with vector spaces, elements from different inner product spaces cannot be combined using the inner product, meaning one cannot take the inner product between a $2$ and $3$-dimensional vector. Note, however, that the value of an inner product is a \emph{scalar}, which can be multiplied by any vector using the same type of scalars.
+
+\begin{exercise}[Inner Products]\mbox{}\\
+  Given the same vectors as above, compute the following inner products (or explain why no answer exists):
+  \begin{enumerate}[label=\alph*.]
+    \item $\inprod{u}{v}$
+    \item $\inprod{v}{u}$
+    \item $\inprod{w}{x}$
+    \item $\inprod{u}{v}\vec w$
+    \item $\inprod{{\inprod{u}{v}\vec w}}{w}$
+    \item $\inprod{{\inprod{x}{y}\vec w}}{w}$
+    \item $\inprod{{\inprod{x}{y}\vec x}}{w}$
+  \end{enumerate}
+\end{exercise}
+
+\paragraph{Anything else?}
+There are many more operations defined on vectors with applications in areas such as computer graphics, which we  ignore in this course.
+
+\subsection{Matrices}
+Like vectors, matrices are collections of numbers\footnote{Here, we are using the data science intuition from before; visually, matrices correspond to transformations of vectors, changing the arrows from our physics-based intuition.}. Unlike vectors, matrices are two-dimensional: they have rows and columns. The vectors we have seen so far can be seen as special cases of matrices, with either a single row or a single column. Vectors are usually interpreted as $m\times 1$ matrices, or column-vectors. We can also write vectors as a single row, which is called a row-vector. We can switch between the two representations by \emph{transposing} the matrix, which means we flip it around the diagonal running top-left to bottom right:
+
+    \begin{equation*}
+%           M = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}, M^T = \begin{bmatrix} 1 & 4 & 7 \\ 2 & 5 & 8 \\ 3 & 6 & 9 \end{bmatrix}, \vec v = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \vec v ^ T = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}
+       M = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix}, M^T = \begin{bmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{bmatrix}, \vec v = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \vec v ^ T = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}
+    \end{equation*}
+    \begin{equation*}
+       M \in \mathbb{R}^{2\times 3}, M^T \in \mathbb{R}^{3\times 2}, \vec v \in \mathbb{R}^3, \vec v ^ T \in \mathbb{R}^3
+    \end{equation*}
+
+Note that we use capital letters to denote matrices, and bold letters for vectors. Transposition is indicated by a superscript capital $T$. For $\vec v$ (and its transposed counterpart), we can choose whether to interpret it as a matrix or a vector, and match the notation convention for our choice. Here, we went with $\vec v$ being a vector.
+
+Mathematically, matrices are also vectors, in that the set of $m$ by $n$ matrices ($\mathbb{R}^{m\times n}$) is also a vector space. This means that matrices can be added and scaled just like vectors can. There is, however, no inner product defined, so unless $m = 1$ or $n = 1$, $\mathbb{R}^{m\times n}$ is not an inner product space.
+
+
+\paragraph{Matrix Products}
+Two matrices can be multiplied, provided they are of the correct dimensions: the number of columns in the first matrix \emph{must} match the number of rows in the second. The resulting matrix will have the same number of rows as the first, and the same number of columns as the second. This implies matrix multiplication is not symmetrical (or \emph{commutative}, as its formally called): $MN \neq NM$:
+
+    \begin{equation*}
+      \begin{bmatrix} a & b \\ c & d\end{bmatrix}\begin{bmatrix}e & f \\ g & h\end{bmatrix} =
+      \begin{bmatrix}ae+bg & af+bh \\ ce+dg & cf+dh \end{bmatrix}
+      \neq
+      \begin{bmatrix}ae+cf & be+df \\ ag+ch & bg+dh \end{bmatrix} =
+      \begin{bmatrix}e & f \\ g & h\end{bmatrix}\begin{bmatrix} a & b \\ c & d\end{bmatrix}
+    \end{equation*}
+
+In this example, both matrices are in $\mathbb{R}^{2\times 2}$, so both $MN$ and $NM$ are defined (though the results are unlikely to be equal). This only happens when the first matrix has the same number of columns as the second, and vice versa. Take a look at some more examples:
+
+    \begin{equation*}
+      \begin{bmatrix} a & b \\ c & d \\ e & f\end{bmatrix}\begin{bmatrix}g & h & i \\ j & k & l\end{bmatrix} =
+        \begin{bmatrix} ag+bj & ah+bk & ai+bl \\ cg+dj & ch+dk & ci+dl \\ eg+fj & eh+fk & ei+fl\end{bmatrix}
+    \end{equation*}
+    \begin{equation*}
+      \begin{bmatrix}a & b & c \\ d & e & f\end{bmatrix}\begin{bmatrix} g & h \\ i & j \\ k & l\end{bmatrix} =
+        \begin{bmatrix} ag+bi+ck & ah+bj+cl \\ dg+ei+fk & dh+ej+fl \\\end{bmatrix}
+    \end{equation*}
+
+So we can multiply a $2 \times 3$ matrix by a $3 \times 2$ matrix and vice versa. The results are not only different, but even have a different structure. In general, if $M \in \mathbb{R}^{a \times b}$ and $N \in \mathbb{R}^{b \times c}$, then $MN \in \mathbb{R}^{a \times c}$.\\
+
+As a last example, consider the following matrix multiplication:
+
+    \begin{equation*}
+      \begin{bmatrix} a & b \\ c & d \\ e & f \\ g & h\end{bmatrix}\begin{bmatrix}i & j & k \\ l & m & n\end{bmatrix} =
+        \begin{bmatrix} ai+bl & aj+bm & ak+bn \\ ci+dl & cj+dm & ck+dn \\ ei+fl & ej+fm & ek+fn \\ gi+hl & gj+hm & gk+hn \\ \end{bmatrix}
+    \end{equation*}
+
+Here, there is only one way we can multiply; the other way around would be invalid, just as adding two matrices of different dimensions would.
+
+It might seem random which numbers get multiplied and added together to form each element, but there is a method to this madness: Every element at coordinate $(x,y)$ of the resulting matrix has a value determined by row $x$ of the first matrix and column $y$ of the second. In fact, if $AB = C$, then $C_{x,y}$ is formed by the inner product of row $x$ of $A$ and column $y$ of $B$:
+
+  $$AB = C \quad\Rightarrow\quad C_{x,y} = \bra{A_{x,*}}\ket{B_{*,y}}$$
+
+Furthermore, the inner product of two vectors is equal to their matrix product, interpreting the first vector as a row and the second as a column.
+
+$$\vec v = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \vec v ^ T = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}$$
+$$\inprod{v}{v} = \vec v^T \vec v = 1\times1 + 2\times 2 + 3\times 3 = 14 $$
+
+\begin{aside}[Outer Product]\mbox{}\\
+  You might wonder if multiplying the other way around is also defined. This operation is called the outer product, which instead of resulting in a scalar\footnote{Which is also, if you feel pendantic, a $1\times 1$ matrix.} is a square matrix of the vectors' dimensions. The notation common for this is $\vec u \otimes \vec v$ or $\outprod{u}{v}$ in Dirac notation:
+$$\outprod{v}{v} = \vec v \vec v^T = \begin{bmatrix} 1\times 1 & 1 \times 2 & 1 \times 3 \\ 2 \times 1 & 2 \times 2 & 2 \times 3 \\ 3 \times 1 & 3 \times 2 & 3 \times 3 \end{bmatrix} = \begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \\ 3 & 6 & 9 \end{bmatrix}$$
+\end{aside}
+
+
+  \begin{exercise}[Matrix Multiplication]\mbox{}\\
+  Given the following vectors and matrices,
+    $$A = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}, B= \begin{bmatrix}-3 & 0 \\ 0 & 2 \end{bmatrix}, \vec{u} = \begin{bmatrix}3 \\ 5\end{bmatrix}, \vec{v} = \begin{bmatrix}8 \\ 2\end{bmatrix}$$
+    evaluate the following multiplications:
+    \begin{enumerate}[label=\alph*.]
+      \item $A\vec u$
+      \item $B(A\vec u)$
+      \item $(BA)\vec u$
+      \item $\vec u^T \vec v$
+      \item $\vec v^T \vec u$
+      \item $(A \vec v + B \vec u)\vec v^T$
+    \end{enumerate}
+  \end{exercise}
+

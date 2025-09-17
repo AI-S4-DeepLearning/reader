@@ -1,0 +1,15 @@
+.auctex-auto/
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.out
+*.pdf
+*.ptc
+*.run.xml
+*.synctex.gz
+*.toc
+result
+auto
+.dir-locals.el

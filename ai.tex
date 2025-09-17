@@ -1,0 +1,259 @@
+\chapter{Artificial Intelligence}\label{ch:intro}
+In this chapter we explore the history of Artificial Intelligence (AI), to understand what AI is. Man's urge to think about and build artificial life (let alone artificial intelligence) is almost as old as man itself. Proof of this can be found in, for instance, ancient literature; for example, think of Hephaestos' golden robots or Pygmalion's Galatea.
+
+\begin{aside}[Pygmalion's Galatea]\textbf{}\\
+Pygmalion is a sculptor who is totally disgusted by a group of prostitutes and swears of all women. Instead, he decides to sculpt his ideal woman out of ivory. As Pygmalion makes the statue so beautiful, he actually falls in love with it. At the festival of Aphrodite (the goddess of love), he prays that the goddess will give him a wife just like his statue. She decides to do him one better and actually turns his statue to life. The statue becomes a real woman, and she and Pygmalion get married and have two children.
+\begin{center}\includegraphics[width=0.5\textwidth]{pygmalion.jpg}\end{center}
+The story of Pygmalion has inspired many artist through the centuries. At some point in time, later authors have given the statue the name of Galatea or Galathea.
+
+Variants of the theme are apparent also in the story of \textit{Pinocchio}, the final scene of Shakespeare's \textit{The Winter's Tale} and Bernard Shaw's play \textit{Pygmalion} (later adapted as musical and film, \textit{My Fair Lady}).
+\footnote{Based largely on \cite[Book X]{ovid} and \cite{pygmalion}. Picture by \cite{pygmalion}.}
+\end{aside}
+
+But also, man has been interested in understanding what intelligence means. What it means to be intelligent, why humans are intelligent (and why animals are not), and what it means to think and understand. Philosophical discussions about thinking (cognition) and reasoning date back as far as Aristotle's investigations in rational reasoning and syllogisms, which is the basis of the logics frameworks we still use today. This reasoning about the formalisation of computability of rational thought (through, e.g., Liebniz, Frege, Russel, and G\"odel, see Aside \ref{as:calc}) has captivated scientists for many ages.
+
+\begin{aside}[\emph{Calculemus!} -- A history of formal reasoning]\label{as:calc}\textbf{}\\
+The search for a formal, mathematical, system for reasoning started with the Syllogisms of Aristotle. The famous example: \textit{``If all men are mortal, and Socrates is a man, one can derive that Socrates is mortal''}.
+
+This idea of formal reasoning was further enriched over the years by philosophers like Descartes and Hobbes, until the German philosopher Leibniz dreamt of a formal apparatus that would allow one to precisely determine the truth of things by means of calculation -- \textit{calculus ratiocinator}.
+\begin{quote}``The only way to rectify our reasonings is to make them as tangible as those of the Mathematicians, so that we can find our error at a glance, and when there are disputes among persons, we can simply say: `\textit{Let us calculate [\textbf{calculemus}], without further ado, to see who is right}'\.''.\end{quote}
+Leibniz's idea was further formalised in the algebraic laws of George Boole, who therewith created a first formal language of reasoning, which was further enhanced over the ninth and twentieth century by Gottlob Frege (Begriffschrift) and Bertrand Russel (Principia Mathematica). Finally, through twentied-century philosophers like David Hilbert, Kurt G\"odel, Alan Turing and Alonso Church we reached a formal language of reasoning that lay the foundations of mathematical reasoning as was (and largely still is) commonly exploited in research on Artificial Intelligence.\\[3mm] \mbox{}\hfill\includegraphics[width=0.3\textwidth,trim={0.3cm 0 0.3cm 0},clip]{leibniz}
+\hspace{1mm}\includegraphics[width=0.3\textwidth]{boole}\hspace{1mm}\includegraphics[width=0.3\textwidth]{russel}\\
+\mbox{}\hfill
+  \makebox[0.3\textwidth][c]{Gottfried Leibniz}\hspace{1mm}
+  \makebox[0.3\textwidth][c]{George Boole}\hspace{1mm}
+  \makebox[0.3\textwidth][c]{Bertrand Russel}
+\footnote{Based largely on \cite{logicomix}. Pictures by Wikipedia.}
+\end{aside}
+
+It is therefore not unexpected that when man was able to make machinery that could compute (more efficiently than man itself), people started to wonder whether machines could actually think. That is, can machines be intelligent? This marks the true beginning of AI as a field of research.
+
+In the following, we give a brief overview of the history of AI, from the inception of the field by Alan Turing, and the definition of the field of research at the Dartmouth Conference in 1956, up to what we see as AI nowadays.
+
+\section{A brief history of Artificial Intelligence}
+\subsection{Birth (1952 -- 1956)}
+In the 1930s and 1940s, a handful of scientists from, e.g., mathematics, psychology, engineering, economics, and political science, began to discuss the possibility of creating artificial brains. Discoveries in the, for instance, the field of neuroscience showed that the brain consisted of an electrical network of neurons that fire in all-or-nothing pulses. This started the interest in connectionism. Researching digital signals and creating (analogue) circuitry to simulate brain activity further sparked the interest of creating electrical brains.
+
+\citet{pitts:mcculloch:1943} analysed networks of idealised artificial neurons and showed that they might perform simple logical functions. They were the first to describe what researchers would call a \textit{neural network}. One of the students of Pitts and McCulloch was Marvin Minsky, who would later built the first neural network machine, and would become one of the founding fathers of Artificial Intelligence.
+
+In 1950 Alan Turing published a landmark paper \cite{turing:1950} in which he speculated about the possibility of thinking machines. Turing's work on the formalisation of computation, which has lead to the creation of the first (digital) computer and subsequently the field of computer science, also introduced the possibilities to think further about creating artificial intelligence. Turing noted that it was difficult to define what ``thinking'' means and devised a test to verify whether a machine could actually think; the Turing Test (see aside \ref{as:turing}). A simplified version of this test allowed Turing to argue convincingly that a ``thinking machine'' was at least \textit{plausible}.
+
+\begin{aside}[Turing Test]\label{as:turing}\textbf{}\\
+{\begin{minipage}{0.65\textwidth}
+The Turing Test is a test of a machine's ability to exhibit external intelligent behaviour equivalent to, or indistinguishable from, that of a human. Turing proposed that a human evaluator (C in the picture) would judge natural language conversations between a human and a machine that is designed to generate human-like responses. The evaluator would be aware that one of the two partners in conversation is a machine, and all participants would be separated from each other (they cannot see one another). Interaction would be limited to a text-only channel.
+\end{minipage}
+\hfill
+\begin{minipage}{0.3\textwidth}
+\centering
+\includegraphics[width=\textwidth]{turingtest}
+\end{minipage}}\\[2.5pt]
+If the evaluator cannot reliably tell the machine from the human (Turing originally suggested that the machine would convince a human 30\% of the time after five minutes of conversation), the machine is said to have passed the test.\footnote{Picture by \cite{turingtest}.}
+\end{aside}
+
+With access to digital computers, scientists instinctively recognised that a machine that could manipulate numbers could also manipulate symbols and that the manipulation of symbols could well be the essence of human thought. This was a new approach to creating thinking machines.
+
+In 1956, John McCarthy and Marvin Minsky organised a workshop at the Dartmouth college to describe ``every aspect of learning or any other feature of intelligence'' with the purpose of creating machine simulations. The 1956 Dartmouth Conference was the moment that AI gained its name, its mission, and its major players, and it is widely accepted as the birth of AI.
+
+\subsection{The golden years (1956 -- 1974)}
+The Dartmouth Conference spurred tremendous research in the field: computers were winning at checkers, solving word problems in algebra, proving logical statements in English. Programs were developed that were to most people, simply astonishing.
+
+Many basic AI programs used the same basic algorithm. To achieve some goal (like winning a game, or proving a theorem), they proceed step by step towards it. Many advances were made in search algorithms too apply this `reasoning as search' paradigm. For instance, \citet{newell:simon:1959} captured a general version of this algorithm in a program called ``General Problem Solver''. Other programs searched through goals and sub goals to plan actions, like the STRIPS system developed at Stanford University.
+
+An important goal of AI research is to allow computers to communicate in natural languages like English. Early successes were made with programs that could solve high school algebra word problems and semantic nets to represent the relationships between concepts. ELIZA \cite{weizenbaum:1976} could carry out conversation that were so realistic that users were occasionally fooled in believing that the machine was actually intelligent. ELIZA, however, had no idea what she was talking about, she simply gave canned responses and repeated back (somewhat rephrased) what was said to her (including spelling and grammatical errors).
+
+By the middle of the 1960s research was heavily funded by the American Department of Defence. AI founders were optimistic about the future: Herbert Simon predicted, ``machines will be capable, within twenty years, of doing any work a man can do''. Marvin Minsky wrote, ``within a generation [...] the problem of creating `artificial intelligence' will substantially be solved.'' \cite{minsky}
+
+\subsection{First AI winter (1974 -- 1980)}
+In the seventies, however, numerous problems arose for AI, that led to an almost complete shut-down of all research related to AI. The capabilities of AI programs, in those years, were still limited. Even the most impressive ones could only handle trivial versions of problems that they were supposed to solve. All the programs were, in some sense, ``toys''.
+
+Several fundamental limits arose that AI research at the time could not overcome. Although some of these limits would be overcome in later decades, others still trouble the field to this day. They are the following:
+\begin{itemize}
+\item\textbf{Limited computer power} -- Computers at that time were rather simple (at least compared to what we have available nowadays), with only limited computing power and memory at hand, only toy-like representations of problems could be solved. For example, work on natural language processing (by Ross Quillian) was demonstrated on a vocabulary of merely \textit{twenty} words, because that was all that would fit in memory. It was argued that as a certain threshold would be crossed, some hundred times the capabilities that were available then, AI would really take off.
+\item\textbf{Intractability and combinatory explosion} -- many of the problems that AI researchers were trying to solve have an exponential complexity. That means that the additional amount of time required to solve a larger version of the problem grows with exponential speed. The combination of inputs, constraints and bounds of the problem lead to an combinatory explosion (the number of possibilities grows very rapidly when increasing the  size of the problem), leading to problems that cannot be solved in `a reasonable amount of time' (that is, the calculations are possible to perform, but given the computational power available (at the time), it would take aeons before an answer would be produced). For example, calculating a solution to Tic-Tac-Toe (`Drie-op-een-rij') would require one to search (na\"ively) through $3^9 = 19,683$ positions (there are three states (empty, cross, circle) for every nine cells). Consider then that the game of chess has 64 positions, 32 pieces and many thousands of possible moves, and is thus still considered `unsolvable'.
+\item\textbf{Common-sense knowledge and reasoning} -- many important artificial intelligence applications, like vision or natural language processing, rely on enormous amounts of information about the world; world-knowledge or common-sense knowledge. Humans gather a large amounts of implicit knowledge (knowledge that we are not really aware of) about the how the world functions (`if I drop an egg, it will fall to the ground, and break'). A computer does not have this information, and in the 1970 this presented large problems, since there were no databases large enough to even store all the information, let alone any knowledge on how to obtain/learn all that information.
+\item\textbf{Moravec's paradox} -- computers had proven themselves very capable in proving theorems and solving geometry problems, since they require computation capabilities in which computers excel (crunching numbers); however, a supposedly simple task like recognizing a face or crossing a room without bumping into anything is extremely difficult to them. This contradiction is known as Moravec's paradox.
+\item\textbf{Frame and qualifications problems}  -- AI researchers (like John McCarthy) who used logic discovered that the formal apparatus that was supposed to operationalise human reasoning had some basic flaws. For one, if one wanted to make deductions (calculations) about anything, everything related to that had to be encoded in the logic (frame problem). Logics cannot make deductions about facts or knowledge that has not been a priori encoded in the model. Moreover, logics could not represent ordinary deductions involving planning or default reasoning (human reasoning is not black-and-white; true or false, but uses 'defaults' if not enough knowledge is available; e.g. `Birds can fly', `Tweety is a bird, therefore it can fly... unless Tweety is a penguin'). New logics had to be developed (like non-monotonic logics and modal logics) to try to solve these problems.
+\end{itemize}
+
+Due to the lack of progress in AI, funding agencies (such as British Government, DARPA and the National Research Council) became frustrated and cut off almost all funding for undirected research in AI. To make matters worse, AI received many critiques even from researchers within the field, that AI might not be as promising as expected and that intelligent machines might not be possible after all. Philosophers like John Searle argued that Turing's proposition of a thinking machine was impossible (see aside \ref{as:chinese}), and that symbolic reasoning (i.e., using logic) was never going to create intelligence. A book by \citet{minsky:papert} showed the severe limitations of what perceptrons (early neural networks devised by Frank Rosenblatt) could do, and showed that the predictions by Rosenblatt where grossly exaggerated. This halted the research in neural networks for nearly 10 years.
+
+\begin{aside}[Chinese room]\label{as:chinese}\textbf{}\\
+The Chinese Room argument, a thought-experiment by John Searle in \cite{searle}, holds that a program cannot give a computer a ``mind'', ``understanding'', or ``consciousness'', regardless of how intelligent or human-like the program may make the computer behave. It is a direct attack on Turing's proposition earlier, that computers can be understood as intelligent, if they behave intelligently.
+
+The argument is as follows. Suppose that artificial intelligence has succeeded in constructing a computer that behaves as if it understands Chinese. It takes Chinese characters as input, and by following the instructions of a computer program, produces other Chinese characters, which it presents as output. Let's assume that the machine performs convincingly such that it would pass a Turing Test; it convinces a human Chinese speaker	that the program is itself a Chinese speaker. The questions Searle then poses are: does this machine literally understand Chinese? Or is it merely simulating an understanding of Chinese? The former he calls \emph{\textbf{strong AI}}, the latter he calls \emph{\textbf{weak AI}}.\\[2.5pt]
+\noindent{\begin{minipage}{0.5\textwidth}
+\hspace{12pt} Now, let's replace the computer with Searle himself. He is locked into a room with a book with the English version of the program run on the computer, and enough pencils, paper, erasers, and filing cabinets to execute the program by hand. Searle could receive the Chinese characters through a slot in the door, process
+\end{minipage}
+\hfill
+\begin{minipage}{0.47\textwidth}
+\centering
+\includegraphics[width=\textwidth]{chineseroom}
+\end{minipage}}\\[2.5pt]
+them by means of the book (the program's instructions), and produce other Chinese characters as output. If the computer would have passed the Turing Test, so would Searle.
+
+Searle asserts that his role and that of the computer are essentially the same. As he does not speak a word of Chinese, he is unable to understand anything of the conversation. Therefore, he argues, it follows that the computer would not be able to understand either.
+
+Searle argues that, without ``understanding'', we cannot describe what the machine is doing as ``thinking'' and, since it does not think, it does not have a ``mind'' in anything like the normal sense of the word. Therefore, he concludes that \emph{strong AI is false}.
+\end{aside}
+
+While the image of AI had gotten a severe dent in the 1970s, some major advances where made in the fields of logics (introduction of non-monotonic logics, and the basis for logic programming through ProLog) and representation (using McCarthy's `frames', which later became the roots of inheritance in object-oriented programming). The real value of these discoveries, however, where largely only noticed later, while the failures of AI were all the more prominent.
+
+\subsection{Rise of expert systems (1980 -- 1987)}
+In the 1980s a form of AI program called \emph{expert systems} was adopted by corporations around the world and knowledge became the focus of mainstream AI. Expert systems are programs that can answer questions or solve problems about a specific domain of knowledge, using logical rules derived from experts' knowledge. One of the earliest was the MYCIN program (1972), which diagnosed infectious blood diseases. This demonstrated the feasibility of the approach.
+
+Expert systems restricted themselves to a specific domain of knowledge, thus avoiding the common-sense problems, and their simple design made it relatively easy for programs to be built and then modified once they were in place. AI, for a first, had proven itself \emph{useful}, something which it had failed to do so far.
+
+The power of expert systems came from the expert knowledge they contained. This was part of a new direction in AI research that had gained traction in throughout the 70s. The great lesson from the 1970s was that intelligent behaviour depended on dealing with knowledge, sometimes quite detailed knowledge, of a domain where a given tasks lay. Therefore, knowledge based systems and knowledge engineering became the major focus of AI research in the 1980s.
+
+Connectionism saw a revival, when in 1982 John Hopfield was able to prove that a form of neural network (now called a ``Hopfield net'') could learn and process information in a completely new way. Around the same time, David Rumelhart popularized a new learning method called ``backpropagation''. The new field was unified and inspired by the appearance of Parallel Distributed Processing, and by 1990, neural networks would have become commercially successful, when used as the engines driving programs like optical character recognition (OCR) and speech recognition.
+
+\subsection{The bust: second AI winter (1987 -- 1993)}
+The business community's fascination with AI rose and fell in the 80s in the classic pattern of an economic bubble. In the late 80s and early 90s, AI suffered again a series of financial setbacks. The collapse was, however, largely in the \emph{perception} of AI by government agencies and investors, as the field continued to make advances despite the criticism.
+
+The market for expensive specialised AI hardware to run symbolic programs was overtaken by the advances made in desktop computers. The field once again took a few hits from its own researchers, with Rodney Brooks and Hans Moravec as its main opponents. These researchers from the field of robotics argued for a different approach to AI, where the intelligence is looked from an embodied perspective; that is, situated in the environment, and (intuitively) interacting with it, instead of being a mere thinking machine.
+
+\begin{aside}[\emph{Elephants don't play chess} (Embodied AI)]\mbox{}\\
+In a 1990 paper titled \textit{``Elephants Don't Play Chess''} \cite{brooks1990elephants} robotics researcher Rodney Brooks took a direct aim at the physical symbol system hypothesis, arguing that symbols are not always the best way to intelligence since ``the world is its own best model. It is always exactly up to date. It always has every detail there is to be known. The trick is to sense it appropriately and often enough.''
+
+\begin{center}
+\begin{minipage}{0.35\textwidth}
+\includegraphics[width=\textwidth]{elephant-chess}
+\end{minipage}
+\hspace{3mm}
+\begin{minipage}{0.35\textwidth}
+{\small Brooks was wrong.}\\
+{\footnotesize Picture by Ethiriel Photography.}
+\end{minipage}
+\end{center}
+
+In the 80s and 90s, many cognitive scientists also rejected the symbol processing model of the mind and argued that the body was essential for reasoning. This lead to the fields of behaviour based AI.
+
+In contrast to classic AI, where robots takes a set of steps to solve problems (typically, sensing, reasoning, acting), behaviour based AI rather relies on adaptability. Brooks showed that with a much simpler architecture ant-like behaviour could be achieved that appeared natural in intelligence (though limited), whereas classic AI's reasoning approach resulted in slow and clumsy robots.
+
+A well-known milestone in the field of behaviour based AI is the work by Valentino Braitenberg, who showed that by clever wiring between sensors and motors a complex-appearing behaviour (such as fear and love) could be created.
+\begin{center}
+\begin{minipage}{0.4\textwidth}
+An example of the Braitenberg machine exhibiting fear (2a) and love (2b) of light.\\
+{\footnotesize Picture by Wikipedia.}
+\end{minipage}\hspace{3mm}
+\begin{minipage}{0.4\textwidth}
+\includegraphics[width=0.8\textwidth]{braitenberg}
+\end{minipage}
+\end{center}
+\end{aside}
+
+\subsection{Nouvelle AI (1993 -- 2001)}
+The field of AI, now more than half a century old, finally achieved some of its oldest goals. It began to be used successfully throughout the technology industry, though somewhat behind the scenes. Some of the success was due to increasing computer power and some was achieved by focussing on specific isolated problems. Inside the field there was little agreement on the reasons for AI's failure to fulfil the dream of human level intelligence, which lead to a fragmentation of AI into competing subfields focussed on particular problems or approaches, sometimes even under new names that disguised the tarnished pedigree of ``artificial intelligence''. AI was both more cautious and more successful than it had ever been.
+
+On May 11 1997, Deep Blue managed to beat the reigning world chess champion Garry Kasparov, becoming the first successful chess playing computer. The super computer was a specialised version of a framework developed by IBM and was capable of processing a stunning 200,000,000 moves per second. In 2005, a Stanford robot won the DARPA Grand Challenge by driving autonomously for 131 miles along a unrehearsed desert trail. Two years later, a team from CMU won the DARPA Grand Challenge by autonomously navigating 55 miles in an urban environment (adhering to traffic hazards and all traffic laws). In Februari 2011, IBM's Watson won the Jeopardy! quiz show, defeating two Jeopardy champions by a significant margin.
+
+All of these successes were not due to some revolutionary new paradigm, but mostly on the tedious application of engineering skill and on the tremendous computing power of computers these days. The dramatic increase in power, measured by Moore's law, slowly by surely overcame the fundamental problem of having enough ``raw computer power''.
+
+A new paradigm called ``intelligent agents'' became widespread during the 90s, based on earlier ``divide and conquer'' modular approaches proposed by AI researchers. An intelligent agent is a system that perceives its environment and takes actions to maximise its chance of success. By this definition, simple programs that solve specific problems are intelligent agents, as are human beings and organisations of human beings. The paradigm  is a generalisation of some earlier definition of AI: it goes beyond studying human intelligence; it studies all kinds of intelligence. This brought other fields, such as decision theory and probability into AI research.
+
+Algorithms originally developed by AI researchers began to appear as parts of larger systems. AI had solved a lot of very difficult problems and their solutions proved to be useful throughout the technology industry, such as data mining, industrial robotics, logistics, speech recognition, banking software, medical diagnosis, and search engines.
+The field of AI receives little to no credit for these successes. Many of AI's greatest innovations have been reduced to the status of just another item in the toolbox of computer science. This is now know as the ``AI effect'': ``A lot of cutting edge AI has filtered into general applications, often without being called AI because once something becomes useful enough and common enough it's not labelled AI any more.''
+
+\subsection{Deep learning (2000 -- present)}
+In the first decades of the 21st century, access to large amounts of data (known as ``big data''), faster computers and advanced machine learning techniques were successfully applied to many problems throughout the economy. By 2016, the market for AI related products, hardware and software reached more than 8 billion dollars. The applications of big data began to reach into other fields as well. Advances in deep learning drove progress and research in image and video processing, text analysis, and even speech recognition.
+
+Deep learning is a branch of machine learning that models high level abstractions in data by using a deep graph with many processing layers. They are a new form of neural network (and fundamentally function as such), where additional layers (deep-ness) is used to help avoid problems like overfitting that are common to shallow networks. As such, deep neural networks are able to realistically generate more complex models as compared to their shallow counterparts.
+
+\subsection{Ethics \& AI}
+As strong as our wish to create intelligent computers, people have also always been cautious about the possibilities of disaster(s) that could happen when we finally achieve computers that are intelligent. As early as the 1950s, by John von Neumann, stems a theory of the ``emergence of superintelligence'', which argues that with the invention of artificial intelligence, a superintelligence would abruptly trigger runaway technological growth, resuling in unfathomable changes to human civilization (typically ending in the enslavement or destruction of the human race). Von Neumann first used the term ``\textit{singularity}'', which, in the context of technological progress causing accelerating change, means ``the accelerating progress of technology and changes in the mode of human life, give the appearance of approaching some essential singularity in the history of the race beyond which human affairs, as we know them, could not continue'' \cite{vonneumann}. According to this hypothesis, an upgradable intelligent machine (such as a computer running software-based artificial general intelligence) would enter a ``runaway reaction'' of self-improvement cycles, with each new and more intelligent generation appearing more and more rapidly, causing an intelligence explosion and resulting in a powerful superintelligence that would, qualitatively, far surpass all human intelligence.
+
+The law of Moore, describing the exponential growth in computing technology is often used to support the singularity hypothesis. Ray Kurtzweil, a prominent singularity theorist, postulated a law of accelerated returns in which the speed of technological change is generalised using Moore's Law, also including material technology (especially nanotechnology), medical technology and others. Kurtzweil, however, reserves the term ``singularity'' for a rapid increase in artificial intelligence, and expects that ``There will be no distinction, post-Singularity, between human and machine'' \cite{kurtzweil} by his prediction will occur in 2045.
+
+Singularity is still just a hypothesis (that is, it is unproven until it happens), and there are many critics that debate that it will ever happen. Most common criticism attacks the assumption that computers can ever achieve intelligence, and postulate that, while computers are indeed rather successful in some intelligent tasks it does not make them intelligent in all different tasks, like us humans.
+
+For instance, Steven Pinker stated \cite{pinker}:
+\begin{quote}
+``There is not the slightest reason to believe in a coming singularity. The fact that you can visualize a future in your imagination is not evidence that it is likely or even possible. Look at domed cities, jet-pack commuting, underwater cities, mile-high buildings, and nuclear-powered automobiles -- all staples of futuristic fantasies when I was a child that have never arrived. Sheer processing power is not a pixie dust that magically solves all your problems.''
+\end{quote}
+
+Whether Singularity will ever happen, it remains a fact that machines are becoming increasingly intelligent (or at least, are \emph{appearing} increasingly intelligent), which has an impact on our day-to-day lives. It is becoming more and more a debate of the position of AI in our daily lives; what to think about autonomous cars, what will happen when many (repetitive) jobs will be replaced by robots, how much of our jobs can be automated by means of AI technology, which jobs should never be done (completely) by an AI? Nowadays, you cannot click on a news site nor open a newspaper without finding an article about the role of ethics in Artificial Intelligence. Technology is advancing, and many more AI applications that could only be dreamt of in the 1950-1970s can now be achieved (largely due to the increase in computational power available), but how much of that technology is actually wanted? And should we, if we could, stop the advancement in certain areas (like, for instance, autonomous weapon systems)? These are all valid questions that need to be asked.
+
+\begin{aside}[Asimov's Laws of Robotics]\mbox{}\\
+Isaac Asimov first considered the issue of ethics of AI in the 1950s in his I, Robot series of science fiction stories. At the insistence of his editor John W. Campbell Jr., he proposed the Three Laws of Robotics to govern artificially intelligent systems. The Three Laws are the following:
+\begin{enumerate}
+\item A robot may not injure a human being or, through inaction, allow a human being to come to harm.
+\item A robot must obey the orders given it by human beings except where such orders would conflict with the First Law.
+\item A robot must protect its own existence as long as such protection does not conflict with the First or Second Laws.
+\end{enumerate}
+This could be seen as a first attempt to introduce ethics into artificial intelligent systems (even though, such systems were not yet possible in Asimov's time).
+
+Much of Asimov's work was then spent testing the boundaries of his three laws to see where they would break down, or where they would create paradoxical or unanticipated behaviour. His work suggests that no set of fixed laws can sufficiently anticipate all possible circumstances \cite{irobot}.
+  \begin{marginfigure}
+\includegraphics[width=\textwidth]{i_robot}
+  \end{marginfigure}
+\end{aside}
+
+
+\section{Applied Artificial Intelligence}\label{sec:aai}
+In this course, and in most companies nowadays, AI is synonym for Applied Artificial Intelligence, which is a subfield of generic AI research focussed on those aspects of AI that can be applied in real world situations. Related to what Searle called ``weak AI''\footnote{Sometimes also called ``narrow AI'' or ``applied AI'', as the focus of the AI is much more narrow/applied than that of the general intelligence sought after by ``strong AI''.}, the most common field of applied AI is by far the field of Machine Learning.
+
+By some considered to be part of mathematics (statistical reasoning / statistical learning) or mainstream computer science (big data, data mining, clever algorithmics)\footnote{This is largely due to the ``AI effect'', discussed above.}, machine learning has had an enormous interest over the last few years, with prominent achievements like IBM's Watson, the speech recognition and assistant engines Siri, Google Now (Google Assistant) and Amazon Alexa (Amazon Dot), and Google AlphaMind and Deepmind (winning from the world champion Go). Many companies now see the advantages that AI can bring them, and many are eager to adopt and deploy AI techniques in their businesses.
+
+Machine learning is the subfield of AI (or computer science) that gives computers the ability to learn without being explicitly programmed. Machine learning is a set of techniques that allows programmers to tell the computer what to do (given an input, and perhaps a desired output), without explicitly writing an algorithm to achieve that. That is, in traditional computer science, programmers write algorithms to direct the computer into what actions to take given a particular input to achieve a desired output. That is, the input is know, and the program (algorithms) are clear, in order to have the computer calculate the output (see Figure \ref{fig:ml} below).
+
+\begin{figure}[h]
+\begin{tikzpicture}
+% \draw[step=1cm,gray,very thin] (0, 0) grid (12, 4);
+\node at (0,3) (td) {Data};
+\node at (0,1) (tp) {Program};
+\node[draw,rectangle,thick, minimum height=1.5cm, minimum width=2.5cm, fill=hublue!20] at (2.5,2) (tc) {Computer};
+\node at (5, 2) (to) {Output};
+\draw[-{Latex[length=3mm, width=2mm]}] (td) to (tc);
+\draw[-{Latex[length=3mm, width=2mm]}] (tp) to (tc);
+\draw[-{Latex[length=3mm, width=2mm]}] (tc) to (to);
+\node[align=center] at (3,0) {Traditional programming};
+\node at (7,1) (mo) {(Output)};
+\node at (7,3) (md) {Data};
+\node at (12,2) (mp) {Program};
+\node[draw,rectangle,thick, minimum height=1.5cm, minimum width=2.5cm, fill=hublue!20] at (9.5, 2) (mc) {Computer};
+\draw[-{Latex[length=3mm, width=2mm]}] (md) to (mc);
+\draw[-{Latex[length=3mm, width=2mm]}] (mo) to (mc);
+\draw[-{Latex[length=3mm, width=2mm]}] (mc) to (mp);
+\node[align=center] at (10,0) {Machine learning};
+\end{tikzpicture}
+\caption{Traditional programming vs. machine learning}\label{fig:ml}
+\end{figure}
+
+The result of a machine learning algorithm is typically a program that can be run by the computer to get the output from the specified input. Machine learning algorithms are typically categorised into three categories:
+\begin{itemize}
+\item\textbf{Supervised} -- algorithms that are presented both the input and the desired ouput related with that input. The goal of such algorithms is to determine a general rule that maps the input to the output.
+\item\textbf{Unsupervised} -- algorithms that are presented with only the input, and have to figure out themselves particular structure within it; the goal can be to detect hidden patterns.
+\item\textbf{Reinforcement} -- algorithms that interact with the environment to maximise long-term rewards. These algorithms are typically not rewarded for each step (as in supervised learning) but receive a single payment at the end.
+\end{itemize}
+
+Machine learning can be employed for various problems, the following is an overview of such problems (the list is not meant to be exhaustive but rather to give an idea of the kind of problems that ML is suitable for).
+
+\subsection{Classification}
+Items, samples, individuals are to be put in the right class. This involves the problem of trying to identify to which set of categories a new observation belongs. The characteristics of the categories is typically learned from a given set of labelled examples. Typical examples of classification include Spam filtering, Optical Character Recognition (OCR), Search Engines, Computer Vision.
+
+Typical methods used for classification include: \textit{neural networks} (see chapter \ref{ch:nn}), \textit{support vector machines}, \textit{decision trees}, and \textit{$k$-nearest neighbours}.  % (see section \ref{ch:knnkm})
+
+\subsection{Clustering}
+The objective of clustering is to find underlying structure in the data that is presented. This is typically an unsupervised task, since the algorithm is not predicting anything specific. Common questions that arise when clustering are: How many clusters are there? What are their sizes? Do elements in a sub-population have any common properties? Are sub-populations cohesive? Can they be further split up?
+
+Typical methods used for clustering include: \textit{k-means}, and \textit{Gaussian mixture models}. % (see section \ref{ch:knnkm} below)
+
+\subsection{Regression}
+Regression analysis is the (statistical) process of trying to estimate the relationship among variables. Regression analysis helps one understand how the typical value of the dependent variable (or `criterion') changes when any one of the independent variables is varied, while the other independent variables are kept fixed. For instance, trying to understand the relationship between the amount of hours spend on playing computer games vs. the average grade obtained in class (independent of, e.g., age, gender, etc.).
+
+Typical methods used for regression include: \textit{$k$-nearest neighbours} and \textit{support vector machines}.
+
+\subsection{Dimensionality reduction}
+The data sets used with Machine Learning often have multiple variables to describe individuals/samples. These attributes of individuals can be thought of different dimensions, like the dimensions of a point in space (i.e., any particular point is described by 3 attributes, an x-, y, and z-position\footnote{One might argue that every point has a 4-th dimension, namely time.}). For data points, one can have many dimensions (think of, e.g., all the different attributes one can have to describe a student; next to physical attributes, like length, weight, gender, age, other attributes could be gathered as well, for instance, scores to individual tests/courses). Having many dimensions can make estimations of closeness cumbersome (lots of mathematics involved) and hard to explain. Often, a number of these dimensions correlate with each other, or are not that interesting given the problem at hand. Dimensionality reduction algorithms attempt to reduce the number of dimensions to a more manageable number (like, e.g., 3 to be able to make a meaningful plot).
+
+An example for dimensionality reduction is \textit{Principal Component Analysis}.
+
+\subsection{Density estimation}
+Density estimation is the construction of an estimate, based on observed data, of an unobservable underlying probability density function. The unobservable density function is thought of as the density according to which a large population is distributed; the data are usually thought of as a random sample from that population.
+
+Many machine learning techniques require information about the probabilities of various events involving the data. A Bayesian approach (using probabilities), for instance, presupposes knowledge of the prior probabilities and the class-conditional probability densities of the attributes. This information is rarely available and must usually be estimated from available data.
+
+Example methods include: \textit{kernel density estimation} and \textit{kernel function estimation}.
+
+\subsection{Prediction}
+By some seen as a specialisation of classification, machine learning algorithms can also be employed to perform diagnosis or prediction analysis. The algorithm is used to create stable inferences and make predictions given a (subset) of inputs. This can be done deterministically by means of \textit{decision trees}, or probabilistically by means of \textit{Bayesian networks}.

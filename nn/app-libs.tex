@@ -1,0 +1,414 @@
+\chapter{Neural Network Libraries}\label{ch:lib}
+In this appendix we introduce some of the frequently used libraries for using neural networks. There are, however, many different (good) libraries around, each of them with their own perks and tricks. It would be too much for this appendix to give coverage of all libraries. Neither are the following sections meant to be a complete tutorial for a given library; we introduce some common concepts and show how to build a `simple' network. For complete coverage of a given library, we refer to the many tutorials available on the web. Given the basic knowledge about neural networks that is presented in this reader, most concepts used in libraries should be easy to understand.
+
+\section[TensorFlow]{TensorFlow\protect\footnote{For a complete overview of TensorFlow tutorials, start at \url{https://www.tensorflow.org/tutorials/}.}}
+TensorFlow is an open-source software library developed by Google Brain for machine learning. It is a symbolic math library, stressing the mathematical properties of neural networks as presented in Chapter \ref{ch:opencl}.
+
+A tensor is a mathematical geometrical object that describes linear relations between geometric vectors, scalars and other tensors. Elementary examples of such relations include dot product, cross product and linear maps. As seen in Chapter \ref{ch:opencl}, these lie at the basis of neural networks, and combinations of these (combined into a flow) creates the same properties as expressed by neural networks as described earlier.
+
+So much for explaining the reason why Google decided to call its open-source neural network library \textit{TensorFlow}. In the following we show how to use TensorFlow to classify digits in the MNIST dataset, thus explaining several features of TensorFlow, including building Convolutional Neural Networks (see Appendix \ref{ch:cnn}).
+
+For our example MNIST classifier, we build a convolutional neural network with the following architecure:
+\begin{enumerate}
+\item \textbf{Convolutional layer \#1:} applies 32 $5\times 5$ filters  (extracting $5\times 5$-pixel subregions), with ReLU activation function;
+\item\textbf{Pooling layer \#1:} performs max pooling with a $2\times 2$ filter and stride of 2;
+\item\textbf{Convolutional layer \#2:} applies 64 $5\times 5$ filters, with ReLU activation function;
+\item\textbf{Pooling layer \#2:} again, performs max pooling with a $2\times 2$ filter and stride of 2;
+\item \textbf{Dense layer \#1:} 1,024 neurons, with dropout regularisation rate of 0.4\footnote{\textit{Dropout} is a technique to keep neural networks from overfitting. In essence, the network will occasionally (determined by the probability set for the dropout) disregard the outcome of particular neurons (including their weights to and from the neuron) in the calculation of the forward and backward pass. Simply set, it disables particular neurons randomly while training to boost training of the others.} (probability of 0.4 that any given element will be dropped during training);
+\item\textbf{Dense layer \#2 (Logits layer):} 10 neurons, one for each digit target class (0-9)\footnote{A \textit{logit} is a sigmoid function (see Chapter \ref{ch:nn}); in TensorFlow, the logits layer indicates that this Tensor is the quantity that is being mapped to (so to say, the output Tensor).}.
+\end{enumerate}
+
+The \pythoninline{tf.layers} module contains methods to create each of the three layer types above:
+\begin{itemize}
+\item \pythoninline{conv2d()} constructs a two-dimensional convolution layer. Takes number of filters, filter kernel size, padding, and activation function as arguments.
+\item \pythoninline{max_pooling2d()} constructs a two-dimensional pooling layer using the max-pool algorithm. Takes pooling filter size and stride as arguments.
+\item \pythoninline{dense()} constructs a dense layer. Takes number of neurons and activation function as arguments.
+\end{itemize}
+Each of these methods accepts a tensor as input and returns a transformed tensor as output. This makes it easy to connect one layer to another: just take the output from one layer-creation method and supply it as input to another\footnote{Full code of the example is available on \url{https://github.com/aldewereld/nl.hu.ict.a2i.cnn/blob/master/tf_mnist.py}.}.
+
+\subsection{Input layer}
+The methods in the \pythoninline{layers} module for creating convolutional and pooling layers for two-dimensional image data expect input tensors to have a shape of \pythoninline{[batch_size,} \pythoninline{image_width, image_height, channels]}, defined as follows:
+\begin{itemize}
+\item \pythoninline{batch_size} defines the size of the subset of examples to use when performing gradient descent during training.
+\item\pythoninline{image_width} defines the width of the example images.
+\item\pythoninline{image_height} defines the height of the example images.
+\item\pythoninline{channels} defines the number of colour channels in the example images (the depth). For colour image the number of channels is typically 3 (red, green, blue). For monochrome images, there is just 1 channel (black).
+\end{itemize}
+The MNIST dataset is composed of monochrome $28\times 28$ pixel images, so the desired shape for our input layer is given by the following method that converts our input feature map (\pythoninline{features}) to this shape:
+\begin{lstlisting}
+input_layer = tf.reshape(features["x"], [-1, 28, 28,1])
+\end{lstlisting}
+Here, we have indicated a \pythoninline{batch_size} of $-1$, which specifies that this dimension should be dynamically computed based on the number of input values (in \pythoninline{features["x"]}, holding he size of all other dimensions constant. This allows us to vary the \pythoninline{batch_size} when feeding in the examples into the model. For example, if we feed the model batches of 5, \pythoninline{features["x"]} will contain 3,920 ($5\times 28\times 28\times 1$) values, and \pythoninline{input_layer} will have a shape of \pythoninline{[5, 28, 28, 1]}.
+
+\subsection{Convolutional layer \#1}
+In the first convolutional layer, we apply 32 $5\times 5$ filters to the input layer, with a ReLU activation function. We can use the \pythoninline{conv2d()} method in the \pythoninline{layers} module to create this layer as follows:
+\begin{lstlisting}
+conv1 = tf.layers.conv2d(
+  inputs = input_layer,
+  filters=32,
+  kernel_size=5,
+  padding="same",
+  activation=tf.nn.relu
+)
+\end{lstlisting}
+The \pythoninline{input} argument specifies our input tensor, which must have the shape \pythoninline{[batch_size,} \pythoninline{image_width, image_height, channels]}. Here we connected our first convolutional layer to the \pythoninline{input_layer}, as defined above.
+
+The \pythoninline{filters} argument specifies the number of filters to apply (here, 32), and \pythoninline{kernel_size} specifies the dimensions (using a single integer, here 5, which assumes the filter is square, otherwise \pythoninline{kernel_size=[5, 5]}  can be used as well).
+
+The \pythoninline{padding} argument specifies one of two enumerated values: \pythoninline{valid} (default value)\footnote{While not often used, `valid' padding in TensorFlow only considers the valid positions of a filter on an input volume, and might drop columns when it does not fit. Using `valid' padding will result in a smaller spatial volume (width$\times$height) than the input volume.} or \pythoninline{same}. To specify that the output tensor should have the same width and height as the input tensor, we set \pythoninline{padding=same} here, which instructs TensorFlow to add 0 values to the edges of the input tensor to preserve width and height of 28. (Without padding, a $5\times 5$ convolution over a $28\times 28$ tensor will produce a $24\times 24$ tensor, as there are 24 valid positions (horizontally and vertically) to uniquely place a $5\times 5$ filter with stride 1).
+
+The \pythoninline{activation} argument specifies the activation function to apply to the output of the convolution. Here, we specify ReLU activation with \pythoninline{tf.nn.relu}.
+
+The output tensor produced by \pythoninline{conv2d} with these settings has a shape of \pythoninline{[batch_size,} \pythoninline{28, 28, 32]}: the same width and height as the input, but now with 32 channels holding the output of each of the filters.
+
+\subsection{Pooling layer \#1}
+Next, we connect our first pooling layer to the convolutional layer we just created. We can use the \pythoninline{max_pooling2d()} method in \pythoninline{layers} to construct a layer that performs max pooling with a $2\times 2$ filter and stride of 2:
+\begin{lstlisting}
+pool1 = tf.layers.max_pooling2d(
+  inputs=conv1,
+  pool_size=2,
+  strides=2
+)
+\end{lstlisting}
+Again, \pythoninline{inputs} specifies the input tensor, with a shape of \pythoninline{[batch_size, image_width,}  \pythoninline{image_height, channels]}. Here, our input tensor is \pythoninline{conv1}, the output of the first convolutional layer.
+
+The \pythoninline{pool_size} argument specifies the size of the max pooling filter, again either as an integer in the case of a square filter or as an array \pythoninline{[2, 2]}.
+
+The \pythoninline{strides} argument specifies the size of the stride. Here, we set a stride of 2, which means that the subregions extracted by the filter do not overlap. If you want to set different stride values for width and height, you can instead specify a tuple or a list (e.g., \pythoninline{strides=[3,6]}).
+
+The output tensor produced by \pythoninline{max_pool2d()} has the size of \pythoninline{[batch_size,} \pythoninline{14, 14, 32]}: the pooling filter halves the width and height, but leaves the depth unchanged.
+
+\subsection{Conv \#2 and Pool \#2}
+We can connect a second convolutional and pooling layer to our cnn using the methods described above. For the second conv layer we configure 64 $5\times 5$ filters with ReLU activation, and for our second pool layer, we use the same specs as for our first one:
+\begin{lstlisting}
+conv2 = tf.layers.conv2d(
+  inputs=pool1,
+  filters=64,
+  kernel_size=5,
+  padding="same",
+  activation=tf.nn.relu
+)
+
+pool2 = tf.layers.max_pooling2d(
+  inputs=conv2,
+  pool_size=2,
+  strides=2
+)
+\end{lstlisting}
+
+\subsection{Dense layer}
+Next we add a dense layer (with 1,024 neurons and ReLU activation) to our cnn to perform classification on the features we extracted by the convolutional/pooling layers. Before we can connect the layer, however, we have to flatten the feature map (\pythoninline{pool2}) to shape \pythoninline{[batch_size, features]}, so that our tensor has only two dimensions:
+\begin{lstlisting}
+pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64])
+\end{lstlisting}
+In the \pythoninline{reshape()} operation above, the -1 again signifies that the \pythoninline{batch_size} dimensions will be dynamically calculated based on the number of examples in our input data. Each example has $7*7*64$ features, so we want the \pythoninline{features} dimension to have a value of $3136$ in total.
+
+We can now use the \pythoninline{dense()} method in \pythoninline{layers} to connect our dense layer as follows:
+\begin{lstlisting}
+dense = tf.layers.dense(
+  inputs=pool2_flat,
+  units=1024,
+  activation=tf.nn.relu
+)
+\end{lstlisting}
+The \pythoninline{inputs} argument specifies the input tensor. The \pythoninline{units} argument specifies the number of neurons in the dense layer (1,024). The \pythoninline{activation} argument takes the activation function; again, we use \pythoninline{tf.nn.relu} to add ReLU activation.
+
+To help improve the results of our model, we also apply dropout regularisation to our dense layer, using the \pythoninline{dropout} method in \pythoninline{layers}:
+\begin{lstlisting}
+dropout = tf.layers.dropout(
+  inputs=dense,
+  rate=0.4,
+  training=mode == tf.estimator.ModeKeys.TRAIN
+)
+\end{lstlisting}
+Again, \pythoninline{inputs} specifies the input tensor. The \pythoninline{rate} argument specifies the dropout rate; here we use a 40\% random dropout during training. The \pythoninline{training} argument takes a boolean specifying whether or not the model is currently being run in training mode; dropout is only performed when \pythoninline{training} is \pythoninline{True}. Here, we check if the \pythoninline{mode} passed to our model function is \pythoninline{TRAIN} mode.
+
+\subsection{Logits layer}
+The final layer in our neural network is the logits layer, which returns the raw values for our predictions. We create a dense layer with 10 neurons (one for each target class 0-9), with linear activation (the default):
+\begin{lstlisting}
+logits = tf.layers.dense(inputs=dropout, units=10)
+\end{lstlisting}
+Our final output tensor of the cnn, \pythoninline{logits}, has the shape \pythoninline{[batch_size, 10]}.
+
+\subsection{Generating predictions}
+The logits layer of the model returns predictions as raw values in a 2-dimensional tensor. Let's convert these raw values into two different formats that our model can return:
+\begin{itemize}
+\item the \textbf{predicted class} for each example: a digit from 0-9;
+\item the \textbf{probabilities} for each possible target class for each example.
+\end{itemize}
+For a given example, our predicted class is the element in the corresponding row of the logits tensor with the highest raw value. We can find the index of this element using the \pythoninline{tf.argmax} function:
+\begin{lstlisting}
+tf.argmax(input=logits, axis=1)
+\end{lstlisting}
+The \pythoninline{input} argument specifies the tensor from which to extract maximum values -- here \pythoninline{logits}. The \pythoninline{axis} argument specifies the axis of the \pythoninline{input} tensor along which to find the greatest value. Here, we want to find the largest value along the dimension with index of 1, which corresponds to our predictions (recall that our logits tensor has the shape \pythoninline{[batch_size, 10]}).
+
+We can derive probabilities from our logits layer by applying softmax activation using \pythoninline{tf.nn.softmax}:
+\begin{lstlisting}
+tf.nn.softmax(logits, name="softmax_tensor")
+\end{lstlisting}
+We compile our predictions in a dict, and return an \pythoninline{EstimatorSpec} objecT:
+\begin{lstlisting}
+predictions = {
+  "classes": tf.argmax(input=logits, axis=1),
+  "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
+}
+if mode == tf.estimator.ModeKeys.PREDICT:
+  return tf.estimator.EstimatorSpec(mode=mode,
+           predictions=predictions)
+\end{lstlisting}
+
+\subsection{Calculating loss}
+For both training and evaluating, we need to define a loss function that measures how closely the model's predictions match the target classes. For multiclass problems like MNIST, cross entropy is typically used as the loss metric. The following code calculates cross entropy when the model runs in either \pythoninline{TRAIN} or \pythoninline{EVAL} mode:
+\begin{lstlisting}
+onehot_labels =
+     tf.one_hot(indices=tf.cast(labels, tf.int32), depth=10)
+loss = tf.losses.softmax_cross_entropy(
+  onehot_labels=onehot_labels, logits=logits)
+\end{lstlisting}
+Our \pythoninline{labels} tensor contains a list of predictions for our examples, e.g. \pythoninline{[1, 9, ...]}. In order to calculate cross-entropy, we first need to convert \pythoninline{labels} to the corresponding one-hot encoding\footnote{One hot encoding transforms categorical features to a format that works better with classification and regression algorithms. The label (categorical) is transformed to probabilities for each different classes. Only one of the columns takes a value of 1 for each sample, hence the name \textit{one hot encoding}.}:
+\begin{lstlisting}
+[[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+ ...]
+\end{lstlisting}
+
+\subsection{Training}
+Now we have defined loss for our cnn, let's configure our model to optimise this loss value during training. We use a learning rate of 0.001 and stochastic gradient descent (see Section \ref{sec:gradient}) as the optimisation algorithm:
+\begin{lstlisting}
+if mode == tf.estimator.ModeKeys.TRAIN:
+  optimizer =
+    tf.train.GradientDescentOptimizer(learning_rate=0.001)
+  train_op = optimizer.minimize(
+    loss=loss,
+    global_step=tf.train.get_global_step())
+  return
+    tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
+\end{lstlisting}
+
+\subsection{Add evaluation metrics}
+To add an accuracy metric in our model, we define \pythoninline{eval_metric_ops} dict in EVAL mode:
+\begin{lstlisting}
+eval_metric_ops = {
+  "accuracy": tf.metrics.accuracy(
+    labels=labels, predictions=predictions["classes"])}
+return tf.estimator.EstimatorSpec(
+  mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
+\end{lstlisting}
+
+\subsection{Training and evaluating the CNN MNIST classifier}
+The creation of the network, as described above, is done in a user-defined function (let's name it \pythoninline{cnn_model_fn}), which is used to create an \pythoninline{Estimator}\footnote{\pythoninline{Estimator} is a TensorFlow class for performing high-level model training, evaluation, and inference.}. Before we do that, we have to load the training and evaluation examples. To run the model later, TensorFlow requires you to specify a \pythoninline{main()} function:
+\begin{lstlisting}
+def main(unused_argv):
+  # Load training and eval data
+  mnist = tf.contrib.learn.datasets.load_dataset("mnist")
+  train_data = mnist.train.images # Returns np.array
+  train_labels = np.asarray(mnist.train.labels, dtype=np.int32)
+  eval_data = mnist.test.images # Returns np.array
+  eval_labels = np.asarray(mnist.test.labels, dtype=np.int32)
+\end{lstlisting}
+Next we can create the \pythoninline{Estimator}:
+\begin{lstlisting}
+# Create the Estimator
+mnist_classifier = tf.estimator.Estimator(
+    model_fn=cnn_model_fn,
+    model_dir="/tmp/mnist_convnet_model")
+\end{lstlisting}
+The \pythoninline{model_dir} argument specifies where the checkpoints (model data) will be stored. Change this to whatever suits you. The \pythoninline{model_fn} argument specifies the function that is used for training, evaluation, and prediction (which is what we built above).
+
+We are now ready to train the model\footnote{The full code on \url{https://github.com/aldewereld/nl.hu.ict.a2i.cnn/blob/master/tf_mnist.py} also includes logging options to show what has happened after a number of iterations. Please inspect the full code for this additional functionality.}, which we can do by creating \pythoninline{train_input_fn} and calling \pythoninline{train} on \pythoninline{mnist_classifier}:
+\begin{lstlisting}
+# Train the model
+train_input_fn = tf.estimator.inputs.numpy_input_fn(
+    x={"x": train_data},
+    y=train_labels,
+    batch_size=100,
+    num_epochs=None,
+    shuffle=True)
+mnist_classifier.train(
+    input_fn=train_input_fn,
+    steps=20000)
+\end{lstlisting}
+The \pythoninline{numpy_input_fn} transforms our training data into a training input function that is used during the training of the network. Note that we specify a \pythoninline{batch_size} of 100 here (which means that the model is trained on minibatches of 100 examples at each step). \pythoninline{num_epochs=None} indicates that the networks trains until the specified number of steps is reached. \pythoninline{shuffle=True} indicates that we shuffle the training data (to decrease the chance of overfitting).
+
+Once training is complete, we want to evaluate the model to determine its accuracy on the MNIST test set. We call the \pythoninline{evaluate} method, which evaluates the metrics we specified in \pythoninline{eval_metric_ops} argument in the \pythoninline{model_fn}.
+\begin{lstlisting}
+# Evaluate the model and print results
+eval_input_fn = tf.estimator.inputs.numpy_input_fn(
+    x={"x": eval_data},
+    y=eval_labels,
+    num_epochs=1,
+    shuffle=False)
+eval_results =
+  mnist_classifier.evaluate(input_fn=eval_input_fn)
+print(eval_results)
+\end{lstlisting}
+Note the similarity with the code for training. However, we now set the \pythoninline{num_epochs=1}, so that the model evaluates the metrics over one epoch of data and returns the result. There is now also no need to shuffle the data.
+
+\subsection{Performance and GPU usage}
+The typical installation of TensorFlow uses the CPU for training the neural networks. In our example above, run on a Intel i5 3.2GHz processor with 12GB of RAM, it takes around 3 hours to train the network (batch\_size 100, 20,000 iterations), which resulted in an accuracy of 96.9\%.
+
+TensorFlow can also be sped up by using GPU(s) for training. For now it only supports NVidia CUDA cores, but the speed increase can be rather significant. See \url{https://www.tensorflow.org/tutorials/using_gpu} for more instructions on how to install TensorFlow with GPU capabilities.
+
+\section[Lasagne]{Lasagne\protect\footnote{Tutorials for Lasagne and Theano are available, respectively, here: \url{http://lasagne.readthedocs.io/en/latest/user/tutorial.html} and here \url{http://deeplearning.net/software/theano/tutorial/}.}}
+Lasagne is a lightweight library to build and train neural networks in Theano. Theano, on the other hand, is a Python library that allows you to define, optimise, and evaluate mathematical expressions involving multi-dimensional arrays efficiently. One of the advantages of Theano is the transparent use of the GPU. Theano is often seen as the precursor to TensorFlow, and was developed by the University of Montreal.
+
+The first thing you will note when creating a Lasagne application is that while Lasagne is built on top of Theano, it is meant as a supplement helping with some tasks, not as a replacement. Therefore, you will always mix Lasagne with some vanilla Theano code.
+
+Here we built again a MNIST digit classifier, using the same architecture as described above. First we start with the necessary imports.
+\begin{lstlisting}
+import numpy as np
+import theano
+import theano.tensor as T
+
+import lasagne
+\end{lstlisting}
+
+\subsection{Building the model}
+Lasagne allows you to define an arbitrarily structured neural network by creating and stacking or merging layers. Since every layer knows its immediate incoming layers, the output layer (or output layers) of a network double as a handle to the network as a whole, so usually this is the only thing we pass to the rest of the code.
+
+The function for building the a Convolutional Neural Network (cnn) is named \pythoninline{build_cnn()}, which creates two conv layers and pooling stages, a fully-connected hidden layer and a fully-connected output layer (same as we did above). The function starts by creating the input layer:
+\begin{lstlisting}
+def build_cnn(input_var=None):
+  network = lasagne.layers.InputLayer(shape=(None, 1, 28, 28),
+                                      input_var=input_var)
+\end{lstlisting}
+The four numbers in the shape tuple represent, in order: \pythoninline{(batchsize, channels,} \pythoninline{rows, columns)}. Here, we have set the batchsize to \pythoninline{None}, which means the network will accept input data of arbitrary batchsize after compilation. If you know the batchsize beforehand and do not need this flexibility, you should set the batchsize here, as it allows Theano to apply some optimisations.
+
+Next we add the \pythoninline{Conv2DLayer} on top with 32 filters of size $5\times 5$:
+\begin{lstlisting}
+network = lasagne.layers.Conv2DLayer(
+    network, num_filters=32, filter_size=5,
+    nonlinearity=lasagne.nonlinearities.rectify,
+    stride=1, pad="same",
+    W=lasagne.init.GlorotUniform())
+\end{lstlisting}
+\pythoninline{nonlinearity} takes a nonlinearity function, several of which are defined in \pythoninline{lasagne.nonlinearities}. Here we have chosen the linear rectifier, so we obtain ReLUs. Finally, \pythoninline{lasagne.init.GlorotUniform()} gives the initialiser for the weight matrix \pythoninline{W}. This particular initialiser samples weights from a uniform distribution of a carefully chosen range. Other initialisers are available in \pythoninline{lasagne.init}, and alternatively, \pythoninline{W} could also have been initialised from a Theano shared variable or numpy array of the correct shape (as \pythoninline{GlorotUniform()} is the default, we omit it from now on). \pythoninline{stride} defines the stride, either as an integer or as a 2-element tuple (when you want a different stride horizontally and vertically). \pythoninline{pad} denotes the padding performed to the input volume. It accepts either an integer (for custom defined padding), a tuple (allows different padding per dimension), \pythoninline{'full'} (pads with one less than the filter size on both sides), \pythoninline{'same'} (ensures output volume has equal width and height as input volume for stride 1), or \pythoninline{'valid'} (an alias for 0; no padding).
+
+Next we apply max-pooling of factor 2 in both dimensions, using a \pythoninline{MaxPool2DLayer} instance:
+
+\begin{lstlisting}
+network = lasagne.layers.MaxPool2DLayer(
+    network, pool_size=2, stride=2)
+\end{lstlisting}
+
+Again, \pythoninline{pool_size} can be specified as integer, like here, or as an tuple (e.g. \pythoninline{(2, 2)}). We specify a stride of 2 to ensure the regions of the max-pool do not overlap.
+
+We add another convolution and pooling layer like the ones above:
+\begin{lstlisting}
+network = lasagne.layers.Conv2DLayer(
+    network, num_filters=64, filter_size=5,
+    nonlinearity=lasagne.nonlinearity.rectify,
+    stride=1, pad="same")
+network = lasagne.layers.MaxPool2DLayer(
+    network, pool_size=2, stride=2)
+\end{lstlisting}
+
+Then a fully-connected layer of 1,024 units with 40\% dropout on its inputs (using \pythoninline{lasagne.layers.dropout} shortcut inline):
+\begin{lstlisting}
+network = lasagne.layers.DenseLayer(
+    lasagne.layers.dropout(network, p=.4),
+    num_units=1024,
+    nonlinearity=lasagne.nonlinearity.rectify)
+\end{lstlisting}
+
+And finally, a 10-unit softmax output layer:
+\begin{lstlisting}
+network = lasagne.layers.DenseLayer(
+    network,
+    num_units=10,
+    nonlinearity=lasagne.nonlinearities.softmax)
+
+return network
+\end{lstlisting}
+
+\subsection{Loading the data}
+Last we define some code to load the MNIST dataset and return it in the form of regular numpy arrays. There is no Lasagne involved at all, so for the purpose of this tutorial, we regard it as\footnote{See full code example on \url{https://github.com/aldewereld/nl.hu.ict.a2i.cnn/blob/master/lasagne_mnist.py}.}:
+\begin{lstlisting}
+def load_dataset():
+  ...
+  return X_train, y_train, X_val, y_val, X_test, y_test
+\end{lstlisting}
+\pythoninline{X_train.shape} is \pythoninline{(50000, 1, 28, 28)}, to be interpreted as: 50,000 images of 1 channel, 28 rows and 28 columns each. \pythoninline{y_train.shape} is simply \pythoninline{(50000,)}, that is, it is a vector the same length of \pythoninline{X_train} giving an integer class label for each image -- namely, the digit between 0 and 9 depicted in the image.
+
+\subsection{Training the model}
+First we define a short helper function for synchronously iterating over two numpy arrays of input data and targets, respectively, in minibatches of a given number of items. For the purpose of the tutorial we short it to:
+\begin{lstlisting}
+def iterate_minibatches(inputs, targets,
+                        batchsize, shuffle=False):
+  if shuffle:
+    ...
+  for ...:
+     yield inputs[...], targets[...]
+\end{lstlisting}
+All that is relevant is that it is a generator function that serves one batch of inputs and targets at a time until the given dataset (in \pythoninline{inputs} and \pythoninline{targets}) is exhausted, either in sequence or in a random order.
+
+The actual training is started in the \pythoninline{main()} function.
+\begin{lstlisting}
+# Load the dataset
+X_train, y_train, X_val, y_val, X_test, y_test = load_dataset()
+# Prepare Theano variables for input and targets
+input_var = T.tensor4('inputs')
+target_var = T.ivector('targets')
+# Create neural network model
+network = build_cnn(input_Var)
+\end{lstlisting}
+The first line loads the inputs and targets of the MNIST dataset as numpy arrays, split into training, validation and test data. The next two statements define symbolic Theano variables that  represent a mini-batch of inputs and targets in all the Theano expressions we generate for network training and inference. They are not tied to any data yet, but their dimensionality and data type is fixed already and matches the actual inputs and targets we will process later.
+
+\subsection{Loss and update expressions}
+Continuing, we create a loss expression to be minimised in training:
+\begin{lstlisting}
+prediction = lasagne.layers.get_output(network)
+loss = lasagne.objectives.categorical_crossentropy(
+    prediction, target_var)
+loss = loss.mean()
+\end{lstlisting}
+The first step generates a Theano expression for the network output given the input variable linked to the network's input layer(s). The second step defines a Theano expression for the categorical cross-entropy loss between said network output and the targets. Finally, as we need a scalar loss, we simply take the mean over the mini-batch. Depending on the problem you are solving, you might need different loss functions (there are others in \pythoninline{lasagne.objectives}).
+
+Having the model and the loss function defined, we create update expressions for training the network. An update expression describes how to change the trainable parameters of the network at each presented mini-batch. Again, we use Stochastic Gradient Descent (SGD) here, but there are others available in \pythoninline{lasagne.updates}.
+\begin{lstlisting}
+params =
+  lasagne.layers.get_all_params(network, trainable=True
+updates =
+  lasagne.updates.sgd(loss, params, learning_rate=0.001)
+\end{lstlisting}
+The first step collects all Theano \pythoninline{SharedVariable} instances making up the trainable parameters of the layer, and the second step generates an update expression for each parameter.
+
+\subsection{Compilation}
+Equipped with all the necessary Theano expressions, we are now ready to compile a function performing a training step:
+\begin{lstlisting}
+train_fn = theano.function(
+    [input_var, target_var],
+    loss, updates=updates)
+\end{lstlisting}
+This tells Theano to generate and compile a function taking two inputs -- a mini-batch of images and a vector of corresponding targets -- and returning a single output: the training loss. Additionally, each time it is invoked, it applies all parameter updates in the \pythoninline{updates} dictionary, thus performing a gradient descent step.
+
+For validation, we compile a second function:
+\begin{lstlisting}
+val_fn = theano.function(
+     [input_var, target_var],
+     [test_loss, test_acc])
+\end{lstlisting}
+This one also takes a mini-batch of images and targets, then returns the (deterministic) loss and classification accuracy, not performing any updates.
+
+Finally, we write the training loop. In essence, we need to do the following:
+\begin{lstlisting}
+for epoch in range(num_epochs):
+  for batch in iterate_minibatches(X_train, y_train,
+                                   100, shuffle=True):
+    inputs, targets = batch
+    train_fn(inputs, targets)
+\end{lstlisting}
+This uses our dataset iteration helper function to iterate over the training data in random order, in mini-batches of 100 items each, for \pythoninline{num_epochs} epochs, and calls the training function we compiled to perform an update step of the network parameters.
+
+The complete code (available on \url{https://github.com/aldewereld/nl.hu.ict.a2i.cnn/blob/master/lasagne_mnist.py}) shows how to monitor training and performance of the network.
+
+\subsection{Performance and GPU use}
+At first glance, the Lasagne implementation appears to be much slower than the TensorFlow implementation mentioned above, but the comparison is not completely fair. The Lasagne implementation runs \textit{per epoch}, while the TensorFlow runs \textit{per step}. An epoch is a run over the complete dataset, while a step is simply a run over a single batchsize. So, as MNIST  contains 50,000 images (of which 10,000 are reserved for validation), a single epoch equals $40,000/100=400$ steps (that is, dataset$/$batchsize). To get a fair comparison, we need to run $20,000/400=50$ epochs of training to get similar results.
+
+On an Intel i5 3.2GHz processor with 12GB RAM, the training of the network required around 2.5 hours, and achieved a performance of 99.14\%.
+
+Like TensorFlow, Theano can be sped up significantly by using the GPU (and again, unfortunately, only NVidia CUDA GPUs are supported). Details about adding CUDA support to Lasagne and Theano can be found at \url{http://lasagne.readthedocs.io/en/latest/user/installation.html#gpu-support}.
+
+%\section{Caffe / Caffe2}
+
+%\section{PyTorch}
