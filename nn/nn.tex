@@ -43,7 +43,7 @@ If you look at one colour for a long time your cones (special nerve cells in you
 
 \subsection{Artificial neuron}
 \label{sec:ArtificialNeuron}
-As computer engineers we could look at the neuron as a special type of logic gate: the dendrites represent the different inputs, the axon represents the output and the combination of the synapses and the threshold specify which type of gate it is. Figure \ref{fig:AN} shows a representation of an artificial neuron. It has three inputs. In general it can have more or less inputs $x_1, \dots, x_n$.
+As computer engineers we could look at the neuron as a special type of logic gate: the dendrites represent the different inputs, the axon represents the output and the combination of the synapses and the bias (the inverse of the threshold) specify which type of gate it is. Figure \ref{fig:AN} shows a representation of an artificial neuron. It has three inputs. In general it can have more or less inputs $x_1, \dots, x_n$.
 
 \begin{figure}[h!]
 \centering
@@ -62,24 +62,32 @@ As computer engineers we could look at the neuron as a special type of logic gat
 \label{fig:AN}
 \end{figure}
 
-To compute the output we assign to each input a weight, $w_1, \dots, w_n$. The weights represent the importance of the respective inputs to the output. The neuron's output, 0 or 1, is determined by whether the weighted sum $\sum^n_{i=1} w_i x_i$ is less than or greater than  threshold value $t$. Just like the weights, the threshold is a real number which is a parameter of the neuron. To put it in more precise algebraic terms:
+To compute the output we assign to each input a weight, $w_1, \dots, w_n$. The weights represent the importance of the respective inputs to the output.
+
+Additionally, we assign a \textit{bias} $b$ to the neuron. Just like the weights, the bias is a real number which is a parameter of the neuron. You can think of the bias as a measure of how easy it is to get the perceptron to output a 1. It is the inverse of the concept threshold: $b = -threshold$. 
+
+Or to put it in more biological terms, the bias is a measure of how easy it is to get the perceptron to fire. For a perceptron with a really big bias, it's extremely easy for the perceptron to output a 1. But if the bias is very negative, then it's difficult for the perceptron to output a 1.
+
+The neuron's output, 0 or 1, is determined by whether the weighted sum $\sum^n_{i=1} w_i x_i + b$ is less than or greater than 0. To put it in more precise algebraic terms:
+
 \begin{equation}
 \mathit{output} = g = \left\{\begin{matrix}
- 0 & \text{if } \sum\limits_{i=1}^n w_i x_i < t\\
- 1 & \text{if } \sum\limits_{i=1}^n w_i x_i \geq t
+ 0 & \text{if } \sum\limits_{i=1}^n w_i x_i + b < 0\\
+ 1 & \text{if } \sum\limits_{i=1}^n w_i x_i + b \geq 0
 \end{matrix}\right.
 \label{eq:AF_perceptron}
 \end{equation}
+
 This function is also called an \textit{activation function}, in further reading denoted with a $g$.
 
 And that is all we need to create an artificial neuron. As we see in section \ref{sec:neuron_revisted}, the artificial neuron described here is a specific type of artificial neurons called a perceptron. When we understand the perceptron and networks of perceptrons it is easier to understand how other types of neurons work and why they exist.
 
-We can now make an artificial neuron that can act as a logic gate (see figure \ref{fig:neuron_and_gate}, \ref{fig:neuron_or_gate} and \ref{fig:neuron_invert_gate}). By assigning the weights and the threshold we decide on the behaviour.
+We can now make an artificial neuron that can act as a logic gate (see figure \ref{fig:neuron_and_gate}, \ref{fig:neuron_or_gate} and \ref{fig:neuron_invert_gate}). By assigning the weights and the bias we decide on the behaviour.
 
 \begin{figure}[h!]
 \centering
 \begin{tikzpicture}[scale=1, transform shape]
-\node (a)[circle, draw] at (3, 0) {$t = 1.0$};
+\node (a)[circle, draw] at (3, 0) {$b = -1.0$};
 \node (x1)[] at (0, 1) {$x_1$};
 \node (x2)[] at (0, -1) {$x_2$};
 \node (output)[] at (5, 0) {output};
@@ -88,13 +96,13 @@ We can now make an artificial neuron that can act as a logic gate (see figure \r
 \draw[->] (a) -- (output);
 \end{tikzpicture}
 %\caption{An perceptron given appropriate weights and threshold to act as an AND-gate.}
-\caption{Appropriate weights and threshold to act as an AND-gate.}
+\caption{Appropriate weights and bias to act as an AND-gate.}
 \label{fig:neuron_and_gate}
 \end{figure}
 \begin{figure}[h!]
 \centering
 \begin{tikzpicture}[scale=1, transform shape]
-\node (a)[circle, draw] at (3, 0) {$t = 0.5$};
+\node (a)[circle, draw] at (3, 0) {$b = -0.5$};
 \node (x1)[] at (0, 1) {$x_1$};
 \node (x2)[] at (0, -1) {$x_2$};
 \node (output)[] at (5, 0) {output};
@@ -103,20 +111,20 @@ We can now make an artificial neuron that can act as a logic gate (see figure \r
 \draw[->] (a) -- (output);
 \end{tikzpicture}
 % \caption{A perceptron given appropriate weights and threshold to act as an OR-gate}
-\caption{Appropriate weights and threshold to act as an OR-gate.}
+\caption{Appropriate weights and bias to act as an OR-gate.}
 \label{fig:neuron_or_gate}
 \end{figure}
 \begin{figure}[h!]
 \centering
 \begin{tikzpicture}[scale=1, transform shape]
-\node (a)[circle, draw] at (3, 0) {$t = -0.5$};
+\node (a)[circle, draw] at (3, 0) {$b = 0.5$};
 \node (x1)[] at (0, 0) {$x_1$};
 \node (output)[] at (5, 0) {output};
 \draw[->] (x1) -- (a) node[pos=0.4,sloped,above] {\small $w_1 = -1.0$};
 \draw[->] (a) -- (output);
 \end{tikzpicture}
 % \caption{A perceptron given appropriate weights and threshold to act as an INVERT-gate}
-\caption{Appropriate weights and threshold to act as an INVERT-gate.}
+\caption{Appropriate weights and bias to act as an INVERT-gate.}
 \label{fig:neuron_invert_gate}
 \end{figure}
 
@@ -129,12 +137,12 @@ But we are not limited to logic gates. For example, we could make an artificial 
 \end{itemize}
 We can represent these three factors by corresponding binary variables $x_1$, $x_2$, and $x_3$. For instance, we'd have $x_1 = 1$ if your friends are going, and $x_1 = 0$ if your friends are not going. Similarly, $x_2=1$ if there are cats at the party, and $x_2=0$ if not. And similarly again for $x_3$ and whether there are entree costs to the party.
 
-Suppose, that your friends make every party the best party possible, so much so that it doesn't matter if you have to pay or that there are no cats; you just have to be there. But if your friends are not there, the party needs to be free and have cats for you to be going. For this decision process we could use an artificial neuron. One way to do this is to choose a weight $w_1=0.6$ for the friends, a $w_2=0.3$ and $w_3=0.2$ for the other conditions and set the threshold $t$ to $0.4$. A larger value for the weight means that the factor matters more in the decision process. This unit can be seen in figure \ref{fig:party_unit}. By varying the weights and the threshold, we can get different models of decision-making. For instance, someone who thinks that cats are better than people (who doesn't?) might have a higher weight for $w_2$ and a lower weight for $w_1$.
+Suppose, that your friends make every party the best party possible, so much so that it doesn't matter if you have to pay or that there are no cats; you just have to be there. But if your friends are not there, the party needs to be free and have cats for you to be going. For this decision process we could use an artificial neuron. One way to do this is to choose a weight $w_1=0.6$ for the friends, a $w_2=0.3$ and $w_3=0.2$ for the other conditions and set the bias $b$ to $-0.4$. A larger value for the weight means that the factor matters more in the decision process. This unit can be seen in figure \ref{fig:party_unit}. By varying the weights and the bias, we can get different models of decision-making. For instance, someone who thinks that cats are better than people (who doesn't?) might have a higher weight for $w_2$ and a lower weight for $w_1$.
 
 \begin{figure}[h!]
 \centering
 \begin{tikzpicture}[scale=1, transform shape]
-\node (a)[circle, draw] at (3, 0) {$t = 0.4$};
+\node (a)[circle, draw] at (3, 0) {$b = -0.4$};
 \node (x1)[] at (0, 1) {$x_1$};
 \node (x2)[] at (0, 0) {$x_2$};
 \node (x3)[] at (0, -1) {$x_3$};
@@ -149,7 +157,7 @@ Suppose, that your friends make every party the best party possible, so much so 
 \end{figure}
 
 \subsection{The limits of perceptrons}
-We saw in the figures \ref{fig:neuron_and_gate}, \ref{fig:neuron_or_gate} and \ref{fig:neuron_invert_gate} that perceptrons can represent the simple Boolean functions AND, OR and NOT, but what are the limits to the Boolean functions that can be represented with an artificial neuron? When we look at the activation function in equation \ref{eq:AF_perceptron} we see that it is a linear function. If we would represent our decision making in a two-dimensional plot based on the values of two inputs, then we can only draw one straight line to separate the two decisions. This is shown in figure \ref{fig:linairseperabilty_AND} for an AND-gate. The white and black dots are linear separable. The line between the white and black dots represents the threshold. An artificial neuron can represent an AND-gate. A XOR-gate cannot be represented by an artificial neuron, as there is no single straight line that separates the white and the black dots (see figure \ref{fig:linairseperabilty_EXNOR}).
+We saw in the figures \ref{fig:neuron_and_gate}, \ref{fig:neuron_or_gate} and \ref{fig:neuron_invert_gate} that perceptrons can represent the simple Boolean functions AND, OR and NOT, but what are the limits to the Boolean functions that can be represented with an artificial neuron? When we look at the activation function in equation \ref{eq:AF_perceptron} we see that it is a linear function. If we would represent our decision making in a two-dimensional plot based on the values of two inputs, then we can only draw one straight line to separate the two decisions. This is shown in figure \ref{fig:linairseperabilty_AND} for an AND-gate. The white and black dots are linear separable. The line between the white and black dots represents the bias. An artificial neuron can represent an AND-gate. A XOR-gate cannot be represented by an artificial neuron, as there is no single straight line that separates the white and the black dots (see figure \ref{fig:linairseperabilty_EXNOR}).
 
 \begin{figure}
 \centering
@@ -257,22 +265,10 @@ Neural networks that have cycles and/or bidirectional links are called recurrent
 \label{sec:neuron_revisted}
 The artificial neuron we described before is called a perceptron. There is another type of artificial neuron called a \textit{sigmoid neuron}. In this section we describe the sigmoid neuron, but before we look at the sigmoid neuron let us simplify how we describe perceptrons.
 
-\subsection{Introducing Bias}%\todo{andere titel?}
-In section \ref{sec:ArtificialNeuron} we described the working of a perceptron in equation \ref{eq:AF_perceptron} using inputs $x_1 \dots x_n$, corresponding weights $w_1 \dots w_n$ and threshold $t$. The condition $\sum_{i=1}^n w_i x_i > t$ is cumbersome, and we can make two notational changes to simplify it. The first change is to write it as a dot product, $\vec{w} \cdot \vec{x} = \sum_{i=1}^n w_i x_i$, where $\vec{w}$ and $\vec{x}$ are \textit{vectors} whose components are the weights and inputs, respectively. % \footnote{The $\equiv$ means that what is on the left side is equivalent to what is on the right side. In other words, $\vec{w} \cdot \vec{x}$ is the same as $\sum_{i=1}^n w_i x_i$.}
+\subsection{Using vectors}%\todo{andere titel?}
+In section \ref{sec:ArtificialNeuron} we described the working of a perceptron in equation \ref{eq:AF_perceptron} using inputs $x_1 \dots x_n$, corresponding weights $w_1 \dots w_n$ and bias $b$. The condition $\sum_{i=1}^n w_i x_i + b > 0$ is cumbersome, and we can make a notational change to simplify it. The first change is to write it as a dot product, $\vec{w} \cdot \vec{x} = \sum_{i=1}^n w_i x_i$, where $\vec{w}$ and $\vec{x}$ are \textit{vectors} whose components are the weights and inputs, respectively. 
 
-The second change is to move the threshold to the other side of the inequality, and to replace it by what's known as the perceptron's bias: $b = -threshold$. Using the bias instead of the threshold, the perceptron activation function, $g$, can be rewritten:
-
-\begin{equation}
-\mathit{output} = g = \left\{\begin{matrix}
- 0 & \text{if } \vec{w} \cdot \vec{x} + b < 0\\
- 1 & \text{if } \vec{w} \cdot \vec{x} + b \geq 0
-\end{matrix} \right.
-\label{eq:AF_perceptron_withbias}
-\end{equation}
-
-You can think of the bias as a measure of how easy it is to get the perceptron to output a 1. Or to put it in more biological terms, the bias is a measure of how easy it is to get the perceptron to fire. For a perceptron with a really big bias, it's extremely easy for the perceptron to output a 1. But if the bias is very negative, then it's difficult for the perceptron to output a 1.
-
-We can simplify equation \ref{eq:AF_perceptron_withbias} and our calculations a bit more by making the bias a weight of the special input $x_0$ which will always be 1. This will give us the perceptron activation function, $g$,:
+The second change is to simplify the equation \ref{eq:AF_perceptron} and our calculations a bit by making the bias a weight of the special input $x_0$ which will always be 1. This will give us the perceptron activation function, $g$,:
 
 \begin{equation}
 \mathit{output} = g = \left\{\begin{matrix}
@@ -283,7 +279,7 @@ We can simplify equation \ref{eq:AF_perceptron_withbias} and our calculations a 
 \end{equation}
 where $\vec{w}$ is the vector whose components are the weights $w_0 \dots w_n$, $\vec{x}$ is the vector whose components are the inputs $x_0 \dots x_n$, $w_0$ is called the bias weight, with $x_0 = 1$.
 
-This change from threshold to bias simplifies the calculations needed in neural networks, as now only vector multiplications are required. Later, in Section \ref{ch:opencl}, this means that we can more easily offload the neural network calculations to the GPU for training.
+This change simplifies the calculations needed in neural networks, as now only vector multiplications are required. Later, in Section \ref{ch:opencl}, this means that we can more easily offload the neural network calculations to the GPU for training.
 
 
 \subsection{Sigmoid neuron}
@@ -521,7 +517,7 @@ The algorithm is similar to that of the single-layer networks. The algorithm sta
 
 \section{Exercises}
 \begin{exercise}[NOR-Gate]~\label{ex:NOR-Gate}\\
-Determine weights and a threshold for a perceptron that would act as a NOR-gate with three inputs.
+Determine weights and a bias for a perceptron that would act as a NOR-gate with three inputs.
 
 %Anwser NOR: $ t = -1$, $w_1 = -2$, $w_2 = -2$ and $w_3 = -2$
 \end{exercise}
@@ -569,24 +565,24 @@ Make an adder out of perceptrons. Draw the network and give the corresponding we
 % \label{fig:perceptron_adder}
 % \end{figure}
 
-\begin{exercise}[Programming NNs]~\\
-In this exercise you are going to build a (naive) implementation of a neural networks\footnote{In the next section we discuss a ``smarter'', more mathematical, implementation of neural networks.} and use it to classify a number of data sets.
+% \begin{exercise}[Programming NNs]~\\
+% In this exercise you are going to build a (naive) implementation of a neural networks\footnote{In the next section we discuss a ``smarter'', more mathematical, implementation of neural networks.} and use it to classify a number of data sets.
 
-\paragraph{A) Neuron}
-Write a class to represent a neuron and its functions. Learning capabilities are not necessary yet. Use this class to implement the neuron of exercise \ref{ex:NOR-Gate} and the network of exercise \ref{ex:ADDER}.
+% \paragraph{A) Neuron}
+% Write a class to represent a neuron and its functions. Learning capabilities are not necessary yet. Use this class to implement the neuron of exercise \ref{ex:NOR-Gate} and the network of exercise \ref{ex:ADDER}.
 
-\paragraph{B) Delta Rule}
-Add to the neuron class an update function. This function uses the delta rule to updates its weights. The function has as input the desired activation of the node. Test your new function to train the neuron of exercise \ref{ex:NOR-Gate}.
+% \paragraph{B) Delta Rule}
+% Add to the neuron class an update function. This function uses the delta rule to updates its weights. The function has as input the desired activation of the node. Test your new function to train the neuron of exercise \ref{ex:NOR-Gate}.
 
-\paragraph{C) Backpropagation}
-Add backpropagation to your program. Create the XOR network from the sheets. Initialize the weights with random values. Train the network.
+% \paragraph{C) Backpropagation}
+% Add backpropagation to your program. Create the XOR network from the sheets. Initialize the weights with random values. Train the network.
 
-\paragraph{D) Iris dataset}
-Create a neural network, using your own code, that is able to classify correctly a high percentage of flowers from the iris dataset\footnote{\url{http://archive.ics.uci.edu/ml/datasets/Iris}}. Make sure you use a train set and a test set.
+% \paragraph{D) Iris dataset}
+% Create a neural network, using your own code, that is able to classify correctly a high percentage of flowers from the iris dataset\footnote{\url{http://archive.ics.uci.edu/ml/datasets/Iris}}. Make sure you use a train set and a test set.
 
-\noindent
-Report the shape of your network and its score on the test set.
+% \noindent
+% Report the shape of your network and its score on the test set.
 
-\paragraph{E) Weather data [optional]}
-Adjust your implementation to work on the weather data from the previous chapter. Can your NN perform as well as (or better than) your $k$-NN implementation?
-\end{exercise}
+% \paragraph{E) Weather data [optional]}
+% Adjust your implementation to work on the weather data from the previous chapter. Can your NN perform as well as (or better than) your $k$-NN implementation?
+% \end{exercise}
