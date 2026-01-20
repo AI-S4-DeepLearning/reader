@@ -266,14 +266,14 @@ Neural networks that have cycles and/or bidirectional links are called recurrent
 The artificial neuron we described before is called a perceptron. There is another type of artificial neuron called a \textit{sigmoid neuron}. In this section we describe the sigmoid neuron, but before we look at the sigmoid neuron let us simplify how we describe perceptrons.
 
 \subsection{Using vectors}%\todo{andere titel?}
-In section \ref{sec:ArtificialNeuron} we described the working of a perceptron in equation \ref{eq:AF_perceptron} using inputs $x_1 \dots x_n$, corresponding weights $w_1 \dots w_n$ and bias $b$. The condition $\sum_{i=1}^n w_i x_i + b > 0$ is cumbersome, and we can make a notational change to simplify it. The first change is to write it as a dot product, $\vec{w} \cdot \vec{x} = \sum_{i=1}^n w_i x_i$, where $\vec{w}$ and $\vec{x}$ are \textit{vectors} whose components are the weights and inputs, respectively. 
+In section \ref{sec:ArtificialNeuron} we described the working of a perceptron in equation \ref{eq:AF_perceptron} using inputs $x_1 \dots x_n$, corresponding weights $w_1 \dots w_n$ and bias $b$. The condition $\sum_{i=1}^n w_i x_i + b > 0$ is cumbersome, and we can make a notational change to simplify it. The first change is to write it as a inner product, $\inprod{w}{x} = \sum_{i=1}^n w_i x_i$, where $\vec{w}$ and $\vec{x}$ are \textit{vectors} whose components are the weights and inputs, respectively. 
 
 The second change is to simplify the equation \ref{eq:AF_perceptron} and our calculations a bit by making the bias a weight of the special input $x_0$ which will always be 1. This will give us the perceptron activation function, $g$,:
 
 \begin{equation}
 \mathit{output} = g = \left\{\begin{matrix}
- 0 & \text{if } \vec{w} \cdot \vec{x} < 0\\
- 1 & \text{if } \vec{w} \cdot \vec{x} \geq 0
+ 0 & \text{if } \inprod{w}{x} < 0\\
+ 1 & \text{if } \inprod{w}{x} \geq 0
 \end{matrix}\right.
 \label{eq:AF_perceptron_withbiasasweight}
 \end{equation}
@@ -342,7 +342,7 @@ We can overcome this problem by introducing a new type of artificial neurons cal
 Just like a perceptron, the sigmoid neuron has an input vector $\vec{x}$ and a vector, $\vec{w}$, with weights for each connection. The big difference is that the possible inputs and output of a sigmoid neuron are not only 0's and 1's. The inputs and the output can take any value between 0 and 1. For instance, the value 0.563 is a valid input. To make this also possible for the output the sigmoid neuron uses a different activation function, $g$,:
 
 \begin{equation}
-\mathit{output} = g = \sigma(\vec{w} \cdot \vec{x})
+\mathit{output} = g = \sigma\big(\inprod{w}{x}\big)
 \label{eq:AF_sigmoid_withbiasasweight}
 \end{equation}
 where $\sigma$ is called the \textit{sigmoid function}\footnote{Incidentally, $\sigma$ is sometimes called the logistic function, and this new class of neurons called logistic neurons. It is useful to remember this terminology, since these terms are used by many people working with neural networks. However, we stick with the sigmoid terminology.}, and is defined by:
@@ -384,24 +384,24 @@ In the previous sections we collected all the parts to create a neural network. 
 To learn humans need feedback. This is also true for neural networks. The function that tells the neural network how good it is doing is called the \textit{cost function}. There are multiple types of functions than can be used as a cost function. Here, we use the mean squared error (MSE), also known as the quadratic cost function:
 
 \begin{equation}
-MSE = \frac{1}{n} \sum_{i=0}^n \left | \vec{y}_i - \vec{a}(\vec{x}_i) \right |^2
+MSE = \frac{1}{n} \sum_{i=0}^n \big \Vert\,\vec{y_i} - \vec{a(x_i)} \big \Vert^2
 \label{eq:MSE}
 \end{equation}
 
-The formula for this cost function $C(\vec{w})$ calculates the error (cost $C$) given a vector of weights ($\vec{w}$):\footnote{The math for this cost function might seem complicated, but with a closer look we see it is literally the mean squared error. $\left | \vec{y_i} - \vec{a}(x_i) \right |$ is the difference (or distance) between the output that is given and the output that we want when given input $\vec{x}_i$. In other words $\left | \vec{y}_i - \vec{a}(x_i) \right | $ tells us how wrong the neural network is (i.e. how big the error is) when given input $\vec{x}_i$. As this value can be negative or positive and we are only interested in how wrong the neural network is, we square this value to make all values positive. This is the squared error part of the mean squared error. To get to MSE, we need to calculated the mean. This is done by summing ($\sum$) the squared error over all training inputs and dividing it by the number of training inputs, $i=1,\ldots,n$, ($\frac{1}{2n}$). Actually we also divide by two (hence the 2 in $\frac{1}{2n}$). This has no effect on the functionality when minimising the function, but it makes the function derivative easier. As we use the derivative of this function this  saves us some clutter. In short the MSE is nothing more than the average squared distance between the output of the neural network and the desired output.}
+The formula for this cost function $\vec{C(w)}$ calculates the error (cost $C$) given a vector of weights ($\vec{w}$):\footnote{The maths for this cost function might seem complicated, but with a closer look we see it is literally the mean squared error. $\big\Vert\,\vec{y_i} - \vec{a(x_i)} \big\Vert$ is the difference (or distance) between the output that is given and the output that we want when given input $\vec{x_i}$. In other words $\big\Vert\,\vec{y_i} - \vec{a(x_i)} \big\Vert $ tells us how wrong the neural network is (i.e. how big the error is) when given input $\vec{\vec x}_i$. As this value can be negative or positive and we are only interested in how wrong the neural network is, we square this value to make all values positive. This is the squared error part of the mean squared error. To get to MSE, we need to calculated the mean. This is done by summing ($\sum$) the squared error over all training inputs and dividing it by the number of training inputs, $i=1,\ldots,n$, ($\frac{1}{2n}$). Actually we also divide by two (hence the 2 in $\frac{1}{2n}$). This has no effect on the functionality when minimising the function, but it makes the function derivative easier. As we use the derivative of this function this  saves us some clutter. In short the MSE is nothing more than the average squared distance between the output of the neural network and the desired output.}
 
 %\note{It is not clear (nor explained) what the $w$ is in $C(w)$. Moreover, we take a range from $1\dots n$, but this is not shown in the RHS of the formula; shouldn't we include an index $i$? And finally, $y$ and $a(x)$ are vectors (values of all output neurons)? If so, for consistency with the rest, they should get a $\vec{ }$.}
 
 \begin{equation}
-C(\vec{w}) = \frac{1}{2} MSE = \frac{1}{2n} \sum_{i=0}^n \left | \vec{y}_i - \vec{a}(\vec{x}_i) \right |^2
+\vec{C(w)} = \frac{1}{2} MSE = \frac{1}{2n} \sum_{i=0}^n \big \Vert\,\vec{y_i} - \vec{a(x_i)} \big \Vert^2
 \label{eq:MSE}
 \end{equation}
-where $n$ is the number of training inputs, $x$, $\vec{y}_i$ is the desired outcome of the network when $\vec{x}_i$ is the input and $\vec{a}(x_i)$ is the output of the neural network when $\vec{x}_i$ is the input. The notation $\left | \vec{v} \right |$ denotes the usual length function for a vector $\vec{v}$. \footnote{If we have a vector $\vec{v}$ with values $v_1$, $v_2$ and $v_3$, then $\left | v \right |$ is equals to $ \sqrt{{v_1}^2+{v_2}^2+{v_3}^2}$.}
+where $n$ is the number of training inputs, $x$, $\vec{y_i}$ is the desired outcome of the network when $\vec{x_i}$ is the input and $a(x_i)$ is the output of the neural network when $\vec{x_i}$ is the input. The notation $\big\Vert v \big\Vert$ denotes the usual length function for a vector $\vec{v}$. \footnote{If we have a vector $\vec{v}$ with values $v_1$, $v_2$ and $v_3$, then $\big \Vert v \big \Vert$ is equals to $\sqrt{\inprod{v}{v}} = \sqrt{{v_1}^2+{v_2}^2+{v_3}^2}$.}
 
-Inspecting the form of the quadratic cost function, we see that $C(\vec{w})$ is non-negative, since every term in the sum is non-negative. Furthermore, the cost $C(\vec{w})$ becomes small, i.e., $C(\vec{w})\approx 0$, precisely when $\vec{y}_i$ is approximately equal to the output, $\vec{a}$, for all training inputs, $\vec{x}_i$. So our training algorithm has done a good job if it can find weights and biases so that $C(\vec{w})\approx0$. By contrast, it's not doing so well when $C(\vec{w})$ is large - that would mean that $\vec{y}_i$ is not close to the output $\vec{a}$ for a large number of inputs. So the aim of our training algorithm will be to minimise the cost $C(\vec{w})$ as a function of the weights and biases. In other words, we want to find a set of weights and biases which make the cost as small as possible\footnote{For some readers the questions might rise why we try to minimise the quadratic cost function, as we just as well could maximise the number of correct classified training samples. The problem with the number of correct classified training samples is that it is not a smooth function. Making a small change in the weights of the units will most of the time result in no change in the number of correct classified training samples. This makes it hard to find which change we should make to the weights of the network. The quadratic cost function is smooth and, therefore, does not have this problem.}.
+Inspecting the form of the quadratic cost function, we see that $\vec{C(w)}$ is non-negative, since every term in the sum is non-negative. Furthermore, the cost $\vec{C(w)}$ becomes small, i.e., $\vec{C(w)}\approx 0$, precisely when $\vec{y_i}$ is approximately equal to the output, $a$, for all training inputs, $\vec{x_i}$. So our training algorithm has done a good job if it can find weights and biases so that $\vec{C(w)}\approx0$. By contrast, it's not doing so well when $\vec{C(w)}$ is large - that would mean that $\vec{y_i}$ is not close to the output $\vec{a(x_i)}$ for a large number of inputs. So the aim of our training algorithm will be to minimise the cost $\vec{C(w)}$ as a function of the weights and biases. In other words, we want to find a set of weights and biases which make the cost as small as possible\footnote{For some readers the questions might rise why we try to minimise the quadratic cost function, as we just as well could maximise the number of correct classified training samples. The problem with the number of correct classified training samples is that it is not a smooth function. Making a small change in the weights of the units will most of the time result in no change in the number of correct classified training samples. This makes it hard to find which change we should make to the weights of the network. The quadratic cost function is smooth and, therefore, does not have this problem.}.
 
 \subsection{Gradient descent}\label{sec:gradient}
-In section \ref{sec:cost_function}, we saw that the goal of a learning algorithm is to minimise the cost function $C(\vec{w})$. As $\vec{w}$ consists out of a lot of weights it takes too much time to calculated for each possible $\vec{w}$ the value of $C(\vec{w})$ to see where $C(\vec{w})$ has the lowest value. A solution for this problem is to use gradient descent. Gradient descent is an optimisation algorithm that approaches a (local) minimum of a function by taking steps in the direction of the negative of the gradient of the function at the current point.
+In section \ref{sec:cost_function}, we saw that the goal of a learning algorithm is to minimise the cost function $\vec{C(w)}$. As $\vec{w}$ consists out of a lot of weights it takes too much time to calculated for each possible $\vec{w}$ the value of $\vec{C(w)}$ to see where $\vec{C(w)}$ has the lowest value. A solution for this problem is to use gradient descent. Gradient descent is an optimisation algorithm that approaches a (local) minimum of a function by taking steps in the direction of the negative of the gradient of the function at the current point.
 
 For a first understanding of this algorithm, imagine a blind woman on a mountain that has as goal to go the valley (a minimum). The blind woman doesn't know where she is and can't look around to see which way she has to go. As a solution she feels around to find the slope of the mountain. Now she knows where the mountain goes down and she takes a step in that direction. By repeating this for each step, until she cannot go further down, she knows she ends in a (local) minimum.
 
@@ -414,7 +414,7 @@ Another way to visualise this technique can be seen in figure \ref{fig:valley_wi
 \label{fig:valley_with_ball}
 \end{figure}
 
-Back to our problem. We cannot calculate the minimum of the function, but we can start at a random position (random weights) and then use gradient descent to move down to a minimum. More formal, the algorithm starts with a random $\vec{w}$ and calculates which small change, $\Delta \vec{w}$, reduces $C(\vec{w})$. In other words, we want to find a $\Delta \vec{w}$, that has a negative $\Delta C(\vec{w})$. When $\Delta \vec{w}$ is applied to the weights $C(\vec{w})$ comes closer to a minimum. When we keep repeating this step until we cannot find a $\Delta \vec{w}$, such that $\Delta C(\vec{w})$ is negative, than we are at a (local) minimum and the network has learned its weights.
+Back to our problem. We cannot calculate the minimum of the function, but we can start at a random position (random weights) and then use gradient descent to move down to a minimum. More formal, the algorithm starts with a random $\vec{w}$ and calculates which small change, $\Delta \vec{w}$, reduces $\vec{C(w)}$. In other words, we want to find a $\Delta \vec{w}$, that has a negative $\Delta \vec{C(w)}$. When $\Delta \vec{w}$ is applied to the weights $\vec{C(w)}$ comes closer to a minimum. When we keep repeating this step until we cannot find a $\Delta \vec{w}$, such that $\Delta \vec{C(w)}$ is negative, than we are at a (local) minimum and the network has learned its weights.
 
 The $\Delta \vec{w}$ can be found by calculating the gradient on our current position, $\vec{w}$. The gradient can be found by using the derivatives\footnote{If you are not familiar (anymore) with what a derivative is we recommend watching the first 3 chapters of ``essence of calculus'' by 3Blue1Brown that can be found on youtube: \url{https://youtu.be/WUvTyaaNkzM}.} over each weight. The collection of the gradients is called the gradient vector, $\nabla C$:
 \begin{equation}
@@ -438,14 +438,14 @@ From the last section we know that we can train our neural networks using gradie
 
 First take a look again at the cost function (see equation \ref{eq:MSE}). It requires to look at all training examples for each step. This is a big calculation just for one step. To make our training algorithm faster (but a bit less accurate), we take a step after each training example. The cost function for just one training example is:
 \begin{equation}
-C = \frac{1}{2} \left | \vec{y} - \vec{a}(\vec{x}) \right |^2
+C = \frac{1}{2} \big\Vert\,\vec{y} - \vec{a(x)} \big\Vert^2
 \end{equation}
 
 Now we can use gradient descent to reduce the squared error\footnote{Note that we no longer have to calculate the mean of the squared error, as we are only looking at a single example.} by calculating the partial derivative of $C$ with respect to each weight and updating the weight:
 \begin{equation}
 \begin{split}
 w_i' & = w_i - \eta \frac{\partial C}{\partial w_i} \\
-& = w_i - \eta \frac{\partial(\frac{1}{2} \left | \vec{y} - \vec{a}(\vec{x}) \right |^2)}{\partial w_i}
+& = w_i - \eta \frac{\partial(\frac{1}{2} \big\Vert\,\vec{y} - \vec{a(x)} \big\Vert^2)}{\partial w_i}
 \end{split}
 \end{equation}
 
@@ -454,7 +454,7 @@ In a single layer network (see figure \ref{fig:single_layer_neural_network}) eac
 \begin{equation}
 w_{j,k} = w_{j,k} - \Delta w_{j,k} = w_{j,k} + \eta a_{j} g'(in_k)(y_k - a_k)
 \end{equation}
-where $a_j$ is the activation of input node $j$, $g'$ is the derivative of the activation function \footnote{For the sigmoid neuron the derivative is given by $g' = g(1-g)$}, $in_k$ is the summed input of output node $k$, $y_k$ is the desired activation of output node $k$ and $a_k$ is the actual activation of output node $k$\footnote{Note the change of sign in the equation: the (partial) derivative $\eta \frac{\partial(\frac{1}{2} \left | \vec{y} - \vec{a}(\vec{x}) \right |^2)}{\partial w_i}$ is negative (as we are looking for the down slope), which means that the sign changes from a minus to a plus.}. This updating rule is called the \textit{delta rule}.
+where $a_j$ is the activation of input node $j$, $g'$ is the derivative of the activation function \footnote{For the sigmoid neuron the derivative is given by $g' = g(1-g)$}, $in_k$ is the summed input of output node $k$, $y_k$ is the desired activation of output node $k$ and $a_k$ is the actual activation of output node $k$\footnote{Note the change of sign in the equation: the (partial) derivative $\eta \frac{\partial(\frac{1}{2} \big\Vert\,\vec{y} - \vec{a(x)} \big\Vert^2)}{\partial w_i}$ is negative (as we are looking for the down slope), which means that the sign changes from a minus to a plus.}. This updating rule is called the \textit{delta rule}.
 
 The learning algorithm starts by assigning random values to the weights. Then it keeps updating the weights using the delta rule. Note that the update of the weights happens simultaneously. So, first are all $\Delta w_{j,k}$ calculated and then are all weights updated using the $\Delta w_{j,k}$'s. When a minimum is reached the algorithm stops.
 

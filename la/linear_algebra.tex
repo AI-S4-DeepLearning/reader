@@ -8,7 +8,7 @@ Binnen de wiskunde bestaat een gebied om paralelle data en de berekeningen daaro
 
 
 \def\vec#1{\ket{#1}}
-\def\vec#1{\mid\! #1\rangle}
+\def\vec#1{\vert #1\rangle}
 
 \section[Linear Algebra]{Linear Algebra}
 
@@ -109,7 +109,6 @@ There are many more operations defined on vectors with applications in areas suc
 Like vectors, matrices are collections of numbers\footnote{Here, we are using the data science intuition from before; visually, matrices correspond to transformations of vectors, changing the arrows from our physics-based intuition.}. Unlike vectors, matrices are two-dimensional: they have rows and columns. The vectors we have seen so far can be seen as special cases of matrices, with either a single row or a single column. Vectors are usually interpreted as $m\times 1$ matrices, or column-vectors. We can also write vectors as a single row, which is called a row-vector. We can switch between the two representations by \emph{transposing} the matrix, which means we flip it around the diagonal running top-left to bottom right:
 
     \begin{equation*}
-%           M = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}, M^T = \begin{bmatrix} 1 & 4 & 7 \\ 2 & 5 & 8 \\ 3 & 6 & 9 \end{bmatrix}, \vec v = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \vec v ^ T = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}
        M = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix}, M^T = \begin{bmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{bmatrix}, \vec v = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \vec v ^ T = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}
     \end{equation*}
     \begin{equation*}
@@ -160,7 +159,7 @@ It might seem random which numbers get multiplied and added together to form eac
 
 Furthermore, the inner product of two vectors is equal to their matrix product, interpreting the first vector as a row and the second as a column.
 
-$$\vec v = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \vec v ^ T = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}$$
+$$\vec v = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \vec v ^ T = \bra v = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}$$
 $$\inprod{v}{v} = \vec v^T \vec v = 1\times1 + 2\times 2 + 3\times 3 = 14 $$
 
 \begin{aside}[Outer Product]\mbox{}\\

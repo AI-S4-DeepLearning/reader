@@ -20,11 +20,11 @@ We start by examining a simple example, a single perceptron:
     \end{tikzpicture}
   \end{center}
 
-Instead of considering each input $x_n$ and each weight $\theta_n$ as a separate value, we store them in two vectors $\vec x$ and $\vec\theta$. Normally, we use the matrix $\Theta$ to store the weights between two layers, where each column matches a node in the domain ($a\i L$, the input of the transformation) and each row matches a node in the co-domain ($a^{(L+1)}$, the output of the transformation). In this case, we have a single node in the co-domain, so the weight-matrix consists of a single row: a vector.
+Instead of considering each input $x_n$ and each weight $\theta_n$ as a separate value, we store them in two vectors $\vec{x}$ and $\vec\theta$. Normally, we use the matrix $\Theta$ to store the weights between two layers, where each column matches a node in the domain ($a\i L$, the input of the transformation) and each row matches a node in the co-domain ($a^{(L+1)}$, the output of the transformation). In this case, we have a single node in the co-domain, so the weight-matrix consists of a single row: a vector.
 
-By taking the inner product of the input vector $\vec x$ and the weight vector $\vec \theta$, we can use a single operation to multiply each input value with its associated weight, and sum the result. So $y = \sigma(\theta_1x_1 + \theta_2x_2)$ becomes $y = \sigma\inprod{\theta}{x}$\footnote{Remember, $\sigma$ represents the \textit{sigmoid activation function}, as introduced in Section \ref{sec:neuron_revisted}.}.
+By taking the inner product of the input vector $\vec{x}$ and the weight vector $\vec{\theta}$, we can use a single operation to multiply each input value with its associated weight, and sum the result. So $y = \sigma(\theta_1x_1 + \theta_2x_2)$ becomes $y = \sigma\inprod{\theta}{x}$\footnote{Remember, $\sigma$ represents the \textit{sigmoid activation function}, as introduced in Section \ref{sec:neuron_revisted}.}.
 
-Note that the bias is, in this case, added as a column to the weight matrix (or rather, in this simple example, a single value added to the weight matrix). This value is typically added as column $0$, which in this vector example means $\theta_0$. Furthermore, each input and activation layer is prepended\footnote{So, $\begin{bmatrix}x_1 & x_2\end{bmatrix}$ becomes $\begin{bmatrix}1 & x_1 & x_2\end{bmatrix} $. We can write this as $\vec a \leftarrow \begin{bmatrix}1 & \vec a\end{bmatrix}$.} with a $0$-index element, which will alway be $1$ (as $1 \times \theta_0 = \theta_0$, the bias). Thus, the expansion of our inner product including the bias is $y = \sigma(\theta_0x_0 + \theta_1x_1 + \theta_2x_2)$. In a later example, we will see another way to represent the bias using a separate vector.
+Note that the bias is, in this case, added as a column to the weight matrix (or rather, in this simple example, a single value added to the weight matrix). This value is typically added as column $0$, which in this vector example means $\theta_0$. Furthermore, each input and activation layer is prepended\footnote{So, $\begin{bmatrix}x_1 & x_2\end{bmatrix}$ becomes $\begin{bmatrix}1 & x_1 & x_2\end{bmatrix} $. We can write this as $\vec{a}\leftarrow \begin{bmatrix}1 & \vec{a}\end{bmatrix}$.} with a $0$-index element, which will alway be $1$ (as $1 \times \theta_0 = \theta_0$, the bias). Thus, the expansion of our inner product including the bias is $y = \sigma(\theta_0x_0 + \theta_1x_1 + \theta_2x_2)$. In a later example, we will see another way to represent the bias using a separate vector.
 
 \paragraph{Hidden Layer}
 We now consider a more complicated network, by adding a single hidden layer consisting of $4$ neurons.
@@ -61,7 +61,7 @@ We now consider a more complicated network, by adding a single hidden layer cons
     \end{tikzpicture}
 \end{center}
 
-We can calculate $a_1$ as $\inprod{x}{{\theta\i1}}$, $a_2$ as $\inprod{x}{{\theta\i2}}$, et cetera. But, as we have seen, we can do an entire series of inner products as a single operation using the matrix product. Multiplying $A\vec b =c$, each element $\vec c_y$ in $\vec c$ is calculated by $\inprod{A_{x,*}}{\vec b_y}$. We can use this to our advantage, and stack every weight vector $\vec{\theta\i n}$ for every neuron $a_n$ into a weight matrix $\Theta$. Multiplying this with our input vector $\vec x$ results in a new vector $\vec a$, consisting of all activation values in the succeeding layer.
+We can calculate $a_1$ as $\inprod{x}{{\theta\i1}}$, $a_2$ as $\inprod{x}{{\theta\i2}}$, et cetera. But, as we have seen, we can do an entire series of inner products as a single operation using the matrix product. Multiplying $A\vec{b}=c$, each element $\vec{c_y}$ in $\vec{c}$ is calculated by $\inprod{A_{x,*}}{\vec{b_y}}$. We can use this to our advantage, and stack every weight vector $\vec{\theta\i n}$ for every neuron $a_n$ into a weight matrix $\Theta$. Multiplying this with our input vector $\vec{x}$ results in a new vector $\vec{a}$, consisting of all activation values in the succeeding layer.
 
 $$\Theta\i1 = \begin{bmatrix}- & \vec{\theta^1} & - \\ - & \vec{\theta^2} & - \\ - & \vec{\theta^3} & - \\ - & \vec{\theta^4} & -\end{bmatrix}, \quad \vec{a} = \sigma(\Theta\i1\vec{x})$$
 
@@ -106,7 +106,7 @@ The entire picture now looks like this:
     $$\Theta\i1 = \begin{bmatrix}0.1 & -0.2 & \color{red} -0.3 \\ \color{green} 0.4 & -0.5 & 0.6 \\ -0.7 & 0.8 & 0.9 \\ -0.1 & \color{blue}0.2 & 0.3\end{bmatrix}$$ $$\Theta\i2 = \begin{bmatrix}0.1 & 0.1 & 0.2 & 0.3 & 0.5\end{bmatrix}$$
   \end{minipage}\mbox{}\\[4mm]
 
-    Each value in $\Theta\i 1$ matches a weight between the input and hidden layer; $\Theta\i1_{ij}$ represents the weight from $x_j$ to $a_i$. In this case, rows count from $1$, columns count from $0$ with column $0$ representing the bias. Each value in $\Theta\i 2$ matches a weight between the hidden layer and the output. In this case, it could have been represented by a vector because the output value $y$ is a scalar, but to avoid mixing and matching lowercase and uppercase Greek letters we keep every weight a matrix for now. Calculating $y$ from $\vec x$, $\Theta\i 1$, and $\Theta\i 2$ looks like this:
+    Each value in $\Theta\i 1$ matches a weight between the input and hidden layer; $\Theta\i1_{ij}$ represents the weight from $x_j$ to $a_i$. In this case, rows count from $1$, columns count from $0$ with column $0$ representing the bias. Each value in $\Theta\i 2$ matches a weight between the hidden layer and the output. In this case, it could have been represented by a vector because the output value $y$ is a scalar, but to avoid mixing and matching lowercase and uppercase Greek letters we keep every weight a matrix for now. Calculating $y$ from $\vec{x}$, $\Theta\i 1$, and $\Theta\i 2$ looks like this:
 
   $$\vec{a} = \sigma(\Theta\i1\vec{x}), \quad \vec{a^\prime} = \begin{bmatrix} 1 & \vec{a}\end{bmatrix}, \quad y = \sigma(\Theta\i2\vec{a^\prime})$$
 
@@ -120,7 +120,7 @@ The entire picture now looks like this:
       \node (l1)[] at (1,3.5) {\color{gray} $\Theta\i1$};
       \node (l2)[] at (3,3.5) {\color{gray} $\Theta\i2$};
       \node (l3)[] at (-1, -2.5) {\color{gray} $\vec{b\i1}$};
-      \node (l4)[] at (4, -2.5) {\color{gray} $\vec b\i2$};
+      \node (l4)[] at (4, -2.5) {\color{gray} $\vec{b\i2}$};
       \node (t1)[] at (1,2.5) {};
       \node (t2)[] at (3,2.5) {};
       \node (t3)[] at (0,-2.5) {};
@@ -159,13 +159,13 @@ The entire picture now looks like this:
   \end{center} \end{minipage}\hspace{1mm}\begin{minipage}{0.55\textwidth} \small
     $$\Theta\i1 = \begin{bmatrix} -0.2 & \color{red} -0.3 \\ -0.5 & 0.6 \\ 0.8 & 0.9 \\ \color{blue}0.2 & 0.3\end{bmatrix},
     \vec{b\i1} = \begin{bmatrix}0.1 \\ \color{green} 0.4 \\ -0.7 \\ -0.1\end{bmatrix}$$\\
-      $$\Theta\i2 = \begin{bmatrix}0.1 & 0.2 & 0.3 & 0.5\end{bmatrix}, \quad \vec b^{(2)} = \begin{bmatrix}0.1 \end{bmatrix}$$
+      $$\Theta\i2 = \begin{bmatrix}0.1 & 0.2 & 0.3 & 0.5\end{bmatrix}, \quad \vec{b^{(2)}} = \begin{bmatrix}0.1 \end{bmatrix}$$
   \end{minipage}\mbox{}\\[4mm]
-  $$\vec{a} = \sigma(\Theta\i1\vec{x} + \vec{b\i1}), \quad y = \sigma(\Theta\i2\vec{a}+\vec b\i2)$$
+  $$\vec{a} = \sigma(\Theta\i1\vec{x} + \vec{b\i1}), \quad y = \sigma(\Theta\i2\vec{a}+\vec{b\i2})$$
 
-  $$y = \sigma(\Theta\i2\sigma(\Theta\i1\vec{x} + \vec{b\i1})+\vec b\i2)$$\\[-4mm]
+  $$y = \sigma(\Theta\i2\sigma(\Theta\i1\vec{x} + \vec{b\i1})+\vec{b\i2})$$\\[-4mm]
 
-  Notice that we have written $\vec b\i 2$ as a $1$-element vector instead of a scalar, just as we write the single row matrix $\Theta\i 2$ as a matrix instead of a vector.\\
+  Notice that we have written $\vec{b\i}2$ as a $1$-element vector instead of a scalar, just as we write the single row matrix $\Theta\i 2$ as a matrix instead of a vector.\\
 
 \begin{exercise}[Bias Representation]\mbox{}\\
   Confirm the equivalence of both bias representations by calculating the results in both instances.\\
@@ -216,14 +216,14 @@ Or, with bias as a separate vector:
     \item 16 neurons in hidden layer 3
     \item 4 output neurons
   \end{itemize}
-  Which matrices do we need to implement this, and what are their dimensions? How is the output-vector $\vec y$ defined in terms of $\vec x$? Write the math out as we have seen above, both for bias-as-column and bias-as-vector representations.
+  Which matrices do we need to implement this, and what are their dimensions? How is the output-vector $\vec{y}$ defined in terms of $\vec{x}$? Write the math out as we have seen above, both for bias-as-column and bias-as-vector representations.
 \end{exercise}
 
 \subsection{Vectorised Cost Function}
-Like most forms of supervised machine learning, the cost-function is based on the difference between the output of the network and the expected answer. For each training example, we need to compare two vectors: the predicted answer $\vec y$ and the correct answer $\vec{y^\prime}$. Here, we use the sum of squared errors, $J = (\vec{y}_{1} - \vec{y^\prime}_{1})^2 + (\vec{y}_{2} - \vec{y^\prime}_{2})^2 + \dots + (\vec{y}_{n} - \vec{y^\prime}_{n})^2$. If, for increased clarity, we define an error vector $\vec e = \vec y - \vec {y^\prime}$, we can write this as $J = \vec e_1\vec e_1+\vec e_2\vec e_2 + \dots + \vec e_n \vec e_n$. We have seen this pattern before: what we have here is the inner product of $\vec{e}$ and itself. Vectorised, we can thus write our cost function as $J = \inprod{e}{e} = \vec e^2$. Substituting our original difference between $\vec y$ and $\vec {y^\prime}$ back for $\vec e$ yields $J = \bra{\vec{y}-\vec{y^\prime}}\ket{\vec{y}-\vec{y^\prime}} \quad \text{or} \quad J = (\vec{y}_{} - \vec{y^\prime}_{})^2$.
+Like most forms of supervised machine learning, the cost-function is based on the difference between the output of the network and the expected answer. For each training example, we need to compare two vectors: the predicted answer $\vec{y}$ and the correct answer $\vec{y^\prime}$. Here, we use the sum of squared errors, $J = (\vec{y - y^\prime}_{1})^2 + (\vec{y - y^\prime}_{2})^2 + \dots + (\vec{y - y^\prime}_{n})^2$. If, for increased clarity, we define an error vector $\vec{e} = \vec{y} - \vec{y^\prime}$, we can write this as $J = \vec{e}_1\vec{e}_1+\vec{e}_2\vec{e}_2 + \dots + \vec{e}_n \vec{e}_n$. We have seen this pattern before: what we have here is the inner product of $\vec{e}$ and itself. Vectorised, we can thus write our cost function as $J = \inprod{e}{e} = \vec{e}^2$. Substituting our original difference between $\vec{y}$ and $\vec{y^\prime}$ back for $\vec{e}$ yields $\quad J = \vec{y - y^\prime}^2$.
 
 \subsection{Further Parallelisation}
-  Up until now, we have represented each layer in our neural network as a vector, and used matrices to map between each. Each vector $\vec x$ represents a single input vector, associated with a single output vector $\vec y$. We can evaluate multiple examples in parallel by replacing our vectors by matrices. As an intermediate step, consider our deep example from Section~\ref{sec:deeper}, but this time, interpret each $n$-vector as if it where a $1 \times n$ matrix (for the sake of saving trees, we will only consider the bias-as-vector representation, but the same holds for bias-as-column).
+  Up until now, we have represented each layer in our neural network as a vector, and used matrices to map between each. Each vector $\vec{x}$ represents a single input vector, associated with a single output vector $\vec{y}$. We can evaluate multiple examples in parallel by replacing our vectors by matrices. As an intermediate step, consider our deep example from Section~\ref{sec:deeper}, but this time, interpret each $n$-vector as if it where a $1 \times n$ matrix (for the sake of saving trees, we will only consider the bias-as-vector representation, but the same holds for bias-as-column).
 
   $$X \in \mathbb{R}^{1024\times 1}, A\i1 \in \mathbb{R}^{42\times 1}, A\i2 \in \mathbb{R}^{28\times 1}, Y \in \mathbb{R}^{12\times 1}$$\\[-3mm]
   $$\Theta\i1 \in \mathbb{R}^{42 \times 1024}, \Theta\i2 \in \mathbb{R}^{28 \times 42}, \Theta\i3 \in \mathbb{R}^{12 \times 28}$$
@@ -268,7 +268,7 @@ $$\begin{bmatrix}1\\2\\3\end{bmatrix} + 1 = \begin{bmatrix}1\\2\\3\end{bmatrix}+
 
 \begin{aside}[The Hadamard Product]\mbox{}\\\label{hadamard}
 The Hadamard product $\odot : V \times V \to V$ of two vectors, also referred to as pointwise multiplication, is defined as follows:
-$$ \vec u \odot \vec v = \begin{bmatrix} \vec u_1 \vec v_1 \\ \vec u_2 \vec v_2 \\ \vdots \\ \vec u_n \vec v_n \end{bmatrix} $$
+  $$ \vec{u} \odot \vec{v} = \begin{bmatrix} \vec{u}_1 \vec{v}_1 \\ \vec{u}_2 \vec{v}_2 \\ \vdots \\ \vec{u}_n \vec{v}_n \end{bmatrix} $$
 
 Notice that this means that the Hadamard product of two vectors in space $\mathbb{R}^n$ will always be another vector in $\mathbb{R}^n$. This matches the type Python expects of the \py|*| function, which is likely why this product was chosen despite being a less common operation than the inner product. This behaviour is also consistent with the broadcasting described below.
 \end{aside}
@@ -306,7 +306,7 @@ Notice that only the third example corresponds to the addition using a column ve
 %It is also possible to explicitly create a row vector by using \py|numpy.array([[1],[2],[3]])
 
 \subsection{Example: Perceptron}
-We can now return to our first example (Section \ref{sec:nnmp}): the simple perceptron. We encode $\vec x$ and $\vec \theta$ as numpy \py|array|s, and take their inner product to determine $y$. Using $0.2$ and $0.3$ for the input values of $\vec x$, we get the following:
+We can now return to our first example (Section \ref{sec:nnmp}): the simple perceptron. We encode $\vec{x}$ and $\vec{\theta}$ as numpy \py|array|s, and take their inner product to determine $y$. Using $0.2$ and $0.3$ for the input values of $\vec{x}$, we get the following:
 
 \begin{lstlisting}
   def sigmoid(x): # Also available from SciKit
@@ -424,14 +424,14 @@ def view_image(number):
     \item $A_{x,y}$ or $A_{xy}$ is a number in $A$ (row $x$, column $y$)
     \item $A_{x,*}$ is the vector created from row $x$ of $A$
     \item $\theta$ and $\Theta$ are used for weights in our neural network. Pronounced as \enquote{theta}.
-    \item $\inprod{a}{b}$ is the inner product of $\vec a$ and $\vec b$
+    \item $\inprod{a}{b}$ is the inner product of $\vec{a}$ and $\vec{b}$
     \item $c\vec{v}$ and $cA$ are scalar products
     \item $\vec{v}A$, $A\vec{v}$ and $AB$ are matrix multiplications
   \end{itemize}
 
 \subsection{Asides (for completeness):}
   \begin{itemize}
-    \item $\outprod{a}{b}$ is the outer product of $\vec a$ and $\vec b$
-    \item $\vec a \odot \vec b$ is the Hadamard product of vectors $\vec a$ and $\vec b$
+    \item $\outprod{a}{b}$ is the outer product of $\vec{a}$ and $\vec{b}$
+    \item $\vec{a} \odot \vec{b}$ is the Hadamard product of vectors $\vec{a}$ and $\vec{b}$
     \item $A \odot B$ is the Hadamard product of matrices $A$ and $B$
   \end{itemize}
