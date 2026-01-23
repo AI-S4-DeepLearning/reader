@@ -1,4 +1,8 @@
+% Use original vector notation
+\def\vec{\origvec}
+
 \chapter{Neural Networks}\label{ch:nn}
+
 Our brains are capable of doing many great things. For instance, language processing and object recognition are tasks most people can do effortless. When you look at figure \ref{fig:captcha} it is almost impossible not to see the numbers `0034523', but when we want to write a computer program that reads these numbers we realise how hard this task really is. How do we tell a computer intuitive facts like that a `5' consists out of 2 straight lines and an incomplete circle? Or how do you explain to the computer that although the first two digits are drawn differently they both are a `0'?
 
 \begin{figure}[h!]
@@ -64,7 +68,7 @@ As computer engineers we could look at the neuron as a special type of logic gat
 
 To compute the output we assign to each input a weight, $w_1, \dots, w_n$. The weights represent the importance of the respective inputs to the output.
 
-Additionally, we assign a \textit{bias} $b$ to the neuron. Just like the weights, the bias is a real number which is a parameter of the neuron. You can think of the bias as a measure of how easy it is to get the perceptron to output a 1. It is the inverse of the concept threshold: $b = -threshold$. 
+Additionally, we assign a \textit{bias} $b$ to the neuron\footnote{Bias $b$ is the inverse of the aforementioned concept threshold $t$, so $b = -t$.}. Just like the weights, the bias is a real number which is a parameter of the neuron. You can think of the bias as a measure of how easy it is to get the perceptron to output a 1.  
 
 Or to put it in more biological terms, the bias is a measure of how easy it is to get the perceptron to fire. For a perceptron with a really big bias, it's extremely easy for the perceptron to output a 1. But if the bias is very negative, then it's difficult for the perceptron to output a 1.
 
@@ -452,9 +456,9 @@ w_i' & = w_i - \eta \frac{\partial C}{\partial w_i} \\
 In a single layer network (see figure \ref{fig:single_layer_neural_network}) each weight has a direct influence on one of the output nodes. The update rule can therefore be rewritten for the weight from input node $j$ to output node $k$:%\todo{Moet dit nog verder uitgewerkt worden?}
 
 \begin{equation}
-w_{j,k} = w_{j,k} - \Delta w_{j,k} = w_{j,k} + \eta a_{j} g'(in_k)(y_k - a_k)
+w_{j,k} = w_{j,k} - \Delta w_{j,k} = w_{j,k} + \eta a_{j} \dot{g}(in_k)(y_k - a_k)
 \end{equation}
-where $a_j$ is the activation of input node $j$, $g'$ is the derivative of the activation function \footnote{For the sigmoid neuron the derivative is given by $g' = g(1-g)$}, $in_k$ is the summed input of output node $k$, $y_k$ is the desired activation of output node $k$ and $a_k$ is the actual activation of output node $k$\footnote{Note the change of sign in the equation: the (partial) derivative $\eta \frac{\partial(\frac{1}{2} \left | \vec{y} - \vec{a}(\vec{x}) \right |^2)}{\partial w_i}$ is negative (as we are looking for the down slope), which means that the sign changes from a minus to a plus.}. This updating rule is called the \textit{delta rule}.
+where $a_j$ is the activation of input node $j$, $\dot{g}$ is the derivative of the activation function\footnote{For the sigmoid neuron the derivative is given by $\dot{g} = g(1-g)$}, $in_k$ is the summed input of output node $k$, $y_k$ is the desired activation of output node $k$ and $a_k$ is the actual activation of output node $k$\footnote{Note the change of sign in the equation: the (partial) derivative $\eta \frac{\partial(\frac{1}{2} \left | \vec{y} - \vec{a}(\vec{x}) \right |^2)}{\partial w_i}$ is negative (as we are looking for the down slope), which means that the sign changes from a minus to a plus.}. This updating rule is called the \textit{delta rule}.
 
 The learning algorithm starts by assigning random values to the weights. Then it keeps updating the weights using the delta rule. Note that the update of the weights happens simultaneously. So, first are all $\Delta w_{j,k}$ calculated and then are all weights updated using the $\Delta w_{j,k}$'s. When a minimum is reached the algorithm stops.
 
@@ -492,28 +496,30 @@ The learning algorithm starts by assigning random values to the weights. Then it
 \end{figure}
 
 \subsection{Multi-layer network}
-In multi-layer networks we have the problem that the weights to hidden layers do not directly influence the output. To  be able to also train these weights we take the idea that hidden node $j$ is ``responsible'' for some fraction of the error in the layer after it. To get to our update rule for the hidden layers we rewrite the delta rule to emphasise what we see as the error:
+In multi-layer networks we have the problem that the weights to hidden layers do not directly influence the output. To  be able to also train these weights we take the idea that hidden node $j$ is ``responsible'' for some fraction of the error in the layer after it. To get to our update rule for the hidden layers we rewrite the delta rule to emphasise what we see as the \emph{error}:
 
 \begin{equation} \label{eq_output_error}
-\Delta_k = g'(in_k)(y_k - a_k)
+\delta_k = \dot{g}(in_k)(y_k - a_k)
 \end{equation}
 \begin{equation}
-w_{j,k} = w_{j,k}' + \eta a_j \Delta_k
+w_{j,k} = w_{j,k}' + \eta a_j \delta_k
 \end{equation}
-where $\Delta_k$ is the error of output node $k$.
+where $\delta_k$ is the error of output node $k$.
 
-If we would know $\Delta_j$, the fraction of error that hidden node $j$ is responsible of in all output nodes, then we can rewrite the update rule to get the update rule for the weights from node $i$ to hidden node $j$:
+If we would know $\delta_j$, the fraction of error that hidden node $j$ is responsible of in all output nodes, then we can rewrite the update rule to get the update rule for the weights from node $i$ to hidden node $j$:
 \begin{equation}
-w_{i,j} = w_{i,j}' + \eta a_i \Delta_j
+w_{i,j} = w_{i,j}' + \eta a_i \delta_j
 \end{equation}
-where $a_i$ is the activation of node $i$. This looks quite similar as the rule for the weights to the output layer. We can calculate $\Delta_j$ with:
+where $a_i$ is the activation of node $i$. This looks quite similar as the rule for the weights to the output layer. We can calculate $\delta_j$ with:
 
 \begin{equation} \label{eq:hiddenlayerDeltaerror}
-\Delta_j = g'(in_j) \sum_p w_{j,p}\, \Delta_p
+\delta_j = \dot{g}(in_j) \sum_p w_{j,p}\, \delta_p
 \end{equation}
-where $w_{j,p}$ is the weight from node $j$ to node $p$ and $\Delta_p$ is the error of node $p$. If node $p$ is an output node then $\Delta_p$ is calculated as $\Delta_k$ in equation \ref{eq_output_error} otherwise it is calculated the same way as $\Delta_j$. In the formula for $\Delta_j$ we see that node $j$ is held ``responsible'' for the error in the nodes it is connected to in the next layer dependent on its activation and its weights.
+where $w_{j,p}$ is the weight from node $j$ to node $p$ and $\delta_p$ is the error of node $p$. If node $p$ is an output node then $\delta_p$ is calculated as $\delta_k$ in equation \ref{eq_output_error} otherwise it is calculated the same way as $\delta_j$. In the formula for $\delta_j$ we see that node $j$ is held ``responsible'' for the error in the nodes it is connected to in the next layer dependent on its activation and its weights.
 
-The algorithm is similar to that of the single-layer networks. The algorithm starts by assigning random values to the weights. Then for each example in the training set it calculates the activation for each node. As the activation of a node depends on the activation of the nodes of the previous layer, this is called forward propagation (the activation moves from the input layer to the output layer). Then the error deltas ($\Delta$) for each node are calculated. As these are dependent on the next layer the delta calculation moves from the output layer to the input layer. The error propagates back through the network. When the deltas are known the weights are updated. One loop over all training samples is called an \textit{epoch}. This is repeated for multiple epochs until some stopping criterion (such as a minimum in the cost function) is reached. This algorithm is called \textit{backpropagation} named after the back propagation of the errors.
+The algorithm is similar to that of the single-layer networks. The algorithm starts by assigning random values to the weights. Then for each example in the training set it calculates the activation for each node. As the activation of a node depends on the activation of the nodes of the previous layer, this is called forward propagation (the activation moves from the input layer to the output layer). 
+
+Then the errors ($\delta$) for each node are calculated. As these are dependent on the next layer the calculation moves from the output layer to the input layer. The error propagates back through the network. When the deltas are known the weights are updated. One loop over all training samples is called an \textit{epoch}. This is repeated for multiple epochs until some stopping criterion (such as a minimum in the cost function) is reached. This algorithm is called \textit{backpropagation} named after the back propagation of the errors.
 
 \section{Exercises}
 \begin{exercise}[NOR-Gate]~\label{ex:NOR-Gate}\\
