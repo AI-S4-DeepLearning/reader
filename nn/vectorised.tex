@@ -1,8 +1,14 @@
+% Use original vector notation
+\def\vec{\origvec}
+\def\i#1{^{(#1)}}
+\def\vec#1{\mid\! #1\rangle}
+
 \chapter{Vectorised Neural Networks}\label{ch:opencl}
 
 Though the idea of Neural Networks is older than you might think (refer Chapter \ref{ch:intro}), it is only recently that the techniques started to yield the impressive results that have quickly become synonymous with its name. The reasons for this are myriad, but a large factor was the initial one: the march of technology is catching up with the requirements needed by complex neural networks. To utilise this increase in computing power, various optimisations have been developed for representing neural networks, and an important concept in this is parallelisation. By its very design as a great number of very simple entities, a neural network is a good fit for exploiting modern graphics cards, which consist of hundreds or thousands of cores able to perform a small number of relatively simple tasks. The modern GPU is optimised for matrix and vector calculations, because this is how 3D-graphics are represented. In this chapter we see how neural networks can be represented using basic linear algebra (the area of math concerned with vectors and matrices) to enable us to utilise this vast amount of parallel computing power.
 
 \section{Neural Networks as Matrix-products}\label{sec:nnmp}
+
 We can use the notation and intuitions described above to represent neural networks in a way that can be parallelised. The activation of each layer, whether it is input, output or hidden, is represented by a vector. Weights are represented in matrices, which transform the activation of a layer $a\i L$ to the activation of the next $a^{(L+1)}$ via matrix multiplication. Bias can be represented in multiple ways, but either requires an additional vector or an extra column in each weight-matrix. Gradient descent is used to train the network, like in the object-oriented representation described in Section~\ref{sec:gradient}.
 
 \paragraph{Perceptron}
