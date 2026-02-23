@@ -1,0 +1,29 @@
+\documentclass[a4paper,openany]{tufte-book-hu}
+\usepackage{python}
+\usepackage{amsmath, physics}
+
+\let\origvec\vec
+
+
+\tikzstyle{coverbox} = [fill=black, rectangle, rounded corners=7pt, inner sep=7pt, inner ysep=12pt, fill opacity=0.45, text opacity=1]
+\usetikzlibrary{arrows, shapes, positioning, arrows.meta}
+\tikzstyle{blArrow}=[line width=1mm,draw=black!80,-triangle 45,postaction={draw, line width=3mm, shorten >=4mm, -}]
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{3d}
+
+\tikzset{xyp/.style={canvas is xy plane at z=#1}}
+\tikzset{xzp/.style={canvas is xz plane at y=#1}}
+\tikzset{yzp/.style={canvas is yz plane at x=#1}}
+
+\title{Deep Learning}
+\author{Brian van der Bijl}
+
+\begin{document}
+\maketitle
+
+\mainmatter
+
+\part{Uitwerkingen}
+\input{uitwerkingen}
+
+\end{document}
