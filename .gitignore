@@ -13,3 +13,4 @@
 result
 auto
 .dir-locals.el
+.direnv
